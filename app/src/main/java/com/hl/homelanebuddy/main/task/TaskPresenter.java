@@ -24,17 +24,6 @@ public class TaskPresenter extends HLCoreFragment<TaskView> {
     protected void onBindView() {
         super.onBindView();
 
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.set(Calendar.HOUR_OF_DAY, 18); // For 1 PM or 2 PM
-        calendar.set(Calendar.MINUTE, 19);
-        calendar.set(Calendar.SECOND, 0);
-        PendingIntent pi = PendingIntent.getService(getActivity(), 0,
-                new Intent(getActivity(), MainPresenter.class),PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager am = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-//        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                AlarmManager.INTERVAL_DAY, pi);
-        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
 
     }
 
