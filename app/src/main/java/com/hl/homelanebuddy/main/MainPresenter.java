@@ -17,8 +17,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.hl.hlcorelib.mvp.events.HLCoreEvent;
+import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
 import com.hl.hlcorelib.utils.HLFragmentUtils;
+import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 import com.hl.homelanebuddy.login.LoginPresenter;
 import com.hl.homelanebuddy.main.task.TaskPresenter;
@@ -67,6 +70,27 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
         push(transaction);
 
 
+    }
+
+    /**
+     * Handle onNewIntent() to inform the fragment manager that the
+     * state is not saved.  If you are handling new intents and may be
+     * making changes to the fragment state, you want to be sure to call
+     * through to the super-class here first.  Otherwise, if your state
+     * is saved but the activity is not stopped, you could get an
+     * onNewIntent() call which happens before onResume() and trying to
+     * perform fragment operations at that point will throw IllegalStateException
+     * because the fragment manager thinks the state is still saved.
+     *
+     * @param intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        HLCoreEvent event = new HLCoreEvent(Constants.NEXT_ALARM_EVENT,
+                null);
+        dispatchEvent(event);
     }
 
     @Override
@@ -119,6 +143,13 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
 
         if (id == R.id.action_logout) {
             signOut();
+            return false;
+        }
+        if (id == R.id.action_refresh) {
+
+            HLCoreEvent event = new HLCoreEvent("Refresh",null);
+            HLEventDispatcher.acquire().dispatchEvent(event);
+
             return false;
         }
 

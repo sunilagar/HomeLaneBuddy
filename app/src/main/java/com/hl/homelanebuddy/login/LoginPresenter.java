@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -70,6 +72,9 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
 
     }
 
+    /**
+     * Function to show the snack bar
+     */
     private void showSnackBar(){
         final Snackbar snackbar = Snackbar.make(mView.mSignInButton, "Please check your internet connection.", Snackbar.LENGTH_LONG);
         snackbar.setAction("RETRY", new View.OnClickListener() {
@@ -118,6 +123,10 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
         }
     }
 
+    /**
+     * Function to handle after logging with google
+     * @param result
+     */
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
@@ -130,6 +139,9 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
         }
     }
 
+    /**
+     * Function after login with google button is clicked
+     */
     private void signIn() {
         Handler handler = new Handler(new Handler.Callback() {
             @Override
@@ -139,6 +151,8 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
                         //Strat another Activity Here
                         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                         startActivityForResult(signInIntent, RC_SIGN_IN);
+                        Answers.getInstance().logCustom(new CustomEvent("Login")
+                                .putCustomAttribute("Customer",mGoogleAccount.getEmail() ));
 
                     default:
                         break;
@@ -164,6 +178,9 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
         Log.d("TAG", "onConnectionFailed:" + connectionResult);
     }
 
+    /**
+     * Function to show the progress Dialog
+     */
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
@@ -174,12 +191,19 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
         mProgressDialog.show();
     }
 
+
+    /**
+     * Function to hide the progress dialog
+     */
     private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
     }
 
+    /**
+     * Function to update the UI after login result
+     */
     private void updateUI(boolean signedIn) {
         if (signedIn) {
             Intent intent = new Intent(LoginPresenter.this, MainPresenter.class);

@@ -1,6 +1,8 @@
 package com.hl.homelanebuddy.main.task;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -75,6 +77,16 @@ public class TaskView implements HLView{
         mTaskList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mTaskList.getContext());
         mTaskList.setLayoutManager(mLayoutManager);
+
+        mView.findViewById(R.id.call_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:18001024663"));
+                mView.getContext().startActivity(intent);
+
+            }
+        });
     }
 
 }

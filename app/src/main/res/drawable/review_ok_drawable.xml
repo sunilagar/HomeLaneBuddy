@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="@drawable/ext_happy_selected"
+        android:drawable="@drawable/happy_selected"
         android:state_checked="true"
         android:state_pressed="true" />
     <item
-        android:drawable="@drawable/ext_happy_selected"
+        android:drawable="@drawable/happy_selected"
         android:state_pressed="true" />
     <item
-        android:drawable="@drawable/ext_happy_selected"
+        android:drawable="@drawable/happy_selected"
         android:state_checked="true" />
     <item
-        android:drawable="@drawable/ext_happy_unselected" />
+        android:drawable="@drawable/happy_unselected" />
 
 </selector>

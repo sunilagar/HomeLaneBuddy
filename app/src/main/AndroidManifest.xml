@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".HomeLaneBuddy"
@@ -12,7 +15,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".main.MainPresenter">
+        <activity android:name=".main.MainPresenter" android:launchMode="singleTask">
         </activity>
 
         <activity
@@ -30,6 +33,15 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="170b765593835aef25bfb2bf6fe81a38d6b1c893" />
+        <receiver android:name=".alarm.AlarmManagerReceiver"></receiver>
+
+        <receiver android:name=".alarm.AlarmBootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+        <service android:name=".alarm.AlarmSchedulingService" />
 
     </application>
 

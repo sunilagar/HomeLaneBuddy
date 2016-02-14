@@ -58,8 +58,8 @@ public class UserReviewView implements HLView {
      */
     public String getUserReview(){
         int id = ((RadioGroup)mView.findViewById(R.id.radio_group)).getCheckedRadioButtonId();
-        return (id == R.id.very_good_button) ? "Very Good" : (id == R.id.good_button) ? "Good" :
-                "Bad";
+        return (id == R.id.very_good_button) ? "10" : (id == R.id.good_button) ? "5" :
+                "1";
     }
 
     /**
