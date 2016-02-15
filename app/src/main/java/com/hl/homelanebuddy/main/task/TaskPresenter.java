@@ -31,7 +31,7 @@ import java.util.Date;
 /**
  * Created by hl0395 on 3/2/16.
  */
-public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventListener{
+public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventListener {
 
     TaskListAdapter mTaskAdapter;
     ArrayList<HLObject> taskArray = new ArrayList<>();
@@ -48,77 +48,81 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
     protected void onBindView() {
         super.onBindView();
 
-        if(!hasEventListener(Constants.USER_REVIEW_EVENT, this)){
+        if (!hasEventListener(Constants.USER_REVIEW_EVENT, this)) {
             addEventListener(Constants.USER_REVIEW_EVENT, this);
         }
-        if(!hasEventListener(Constants.NEXT_ALARM_EVENT, this)){
+        if (!hasEventListener(Constants.NEXT_ALARM_EVENT, this)) {
             addEventListener(Constants.NEXT_ALARM_EVENT, this);
         }
-        if(!hasEventListener("Refresh", this)){
+        if (!hasEventListener("Refresh", this)) {
             addEventListener("Refresh", this);
         }
         nextAlaram = 0;
         parseData();
     }
+
     RequestQueue volleyReqQueue;
 
     private void parseData() {
 
+        mView.mProgressView.showProgress();
         final long currentTime = System.currentTimeMillis();
         volleyReqQueue = Volley.newRequestQueue(getActivity());
-        String url = "http://54.169.216.87/projectexp/v1/getDetails/"+ LoginPresenter.mGoogleAccount.getEmail();
+        String url = "http://54.169.216.87/projectexp/v1/getDetails/" + LoginPresenter.mGoogleAccount.getEmail();
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(final String jsonString) {
 
-                                    try{
+                        try {
+                            mView.mProgressView.showProgress();
 
-                                        taskArray.clear();
-                                    JSONObject tasks = new JSONObject(jsonString);
+                            taskArray.clear();
+                            JSONObject tasks = new JSONObject(jsonString);
 
-                                    JSONArray taskList = tasks.getJSONArray("Details");
+                            JSONArray taskList = tasks.getJSONArray("Details");
 
-                                    for (int i = 0; i < taskList.length(); i++) {
-                                        JSONObject task = taskList.getJSONObject(i);
-                                        HLObject taskObj = new HLObject(Constants.Task.NAME);
-                                        taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
+                            for (int i = 0; i < taskList.length(); i++) {
+                                JSONObject task = taskList.getJSONObject(i);
+                                HLObject taskObj = new HLObject(Constants.Task.NAME);
+                                taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
 
-                                        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                                        if (task.getString(Constants.Task.TASK_DATE).length() > 14) {
-                                            Date date = (Date) formatter.parse(task.getString(Constants.Task.TASK_DATE));
+                                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                if (task.getString(Constants.Task.TASK_DATE).length() > 14) {
+                                    Date date = (Date) formatter.parse(task.getString(Constants.Task.TASK_DATE));
 
-                                            taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
-                                            taskObj.put(Constants.Task.TASK_ASSIGNED_TO, task.getString(Constants.Task.TASK_ASSIGNED_TO));
-                                            taskObj.put(Constants.Task.TASK_TYPE, task.getString(Constants.Task.TASK_TYPE));
-                                            taskObj.save();
-                                            taskArray.add(taskObj);
+                                    taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
+                                    taskObj.put(Constants.Task.TASK_ASSIGNED_TO, task.getString(Constants.Task.TASK_ASSIGNED_TO));
+                                    taskObj.put(Constants.Task.TASK_TYPE, task.getString(Constants.Task.TASK_TYPE));
+                                    taskObj.save();
+                                    taskArray.add(taskObj);
 
-                                            if (date.getTime() > currentTime) {
-                                                if (nextAlaram == 0) {
-                                                    nextAlaram = date.getTime();
-                                                    nextTask = task.getString(Constants.Task.TASK_NAME);
-                                                } else {
-                                                    if (nextAlaram > date.getTime()) {
-                                                        nextAlaram = date.getTime();
-                                                        nextTask = task.getString(Constants.Task.TASK_NAME);
-                                                    }
-                                                }
-
+                                    if (date.getTime() > currentTime) {
+                                        if (nextAlaram == 0) {
+                                            nextAlaram = date.getTime();
+                                            nextTask = task.getString(Constants.Task.TASK_NAME);
+                                        } else {
+                                            if (nextAlaram > date.getTime()) {
+                                                nextAlaram = date.getTime();
+                                                nextTask = task.getString(Constants.Task.TASK_NAME);
                                             }
-
                                         }
-                                    }
-                                        mTaskAdapter = new TaskListAdapter(taskArray);
-                                        mView.mTaskList.setAdapter(mTaskAdapter);
-                                        mTaskAdapter.notifyDataSetChanged();
-                                        setAlarm();
 
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
 
+                                }
+                            }
+                            mTaskAdapter = new TaskListAdapter(taskArray);
+                            mView.mTaskList.setAdapter(mTaskAdapter);
+                            mTaskAdapter.notifyDataSetChanged();
+                            setAlarm();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        mView.mProgressView.hideProgress();
 
 
                     }
@@ -128,6 +132,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                mView.mProgressView.hideProgress();
+
             }
         });
 
@@ -135,8 +141,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
     }
 
-    private void setAlarm(){
-        if(nextAlaram != 0) {
+    private void setAlarm() {
+        if (nextAlaram != 0) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.Task.TASK_DATE, nextAlaram + "");
             bundle.putString(Constants.Task.TASK_NAME, nextTask);
@@ -159,7 +165,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         HLCoreEvent e = (HLCoreEvent) hlEvent;
         Bundle bundle = e.getmExtra();
 
-        if(e.getType().equals(Constants.USER_REVIEW_EVENT)) {
+        if (e.getType().equals(Constants.USER_REVIEW_EVENT)) {
 
             HLFragmentUtils.HLFragmentTransaction transaction =
                     new HLFragmentUtils.HLFragmentTransaction();
@@ -167,10 +173,10 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             transaction.mParameters = bundle;
             transaction.mFragmentClass = UserReviewPresenter.class;
             push(transaction);
-        }else if(e.getType().equals(Constants.NEXT_ALARM_EVENT)){
+        } else if (e.getType().equals(Constants.NEXT_ALARM_EVENT)) {
 //            mTaskAdapter.notifyDataSetChanged();
             parseData();
-        }else if(e.getType().equals("Refresh"))
+        } else if (e.getType().equals("Refresh"))
             parseData();
 
     }
