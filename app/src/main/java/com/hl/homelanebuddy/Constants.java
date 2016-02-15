@@ -31,4 +31,10 @@ public final class Constants {
     public static final String DURATION_1_HOUR = "1 Hour";
     public static final String DURATION_10_MINS = "10 Mins";
 
+    public static final class APPConfig{
+        public static final String review_post = "review_post";
+        public static final String get_task_details = "get_task_details";
+
+    }
+
 }

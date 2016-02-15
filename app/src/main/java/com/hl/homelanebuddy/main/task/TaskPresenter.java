@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
 import com.hl.hlcorelib.mvp.events.HLEventListener;
@@ -66,7 +67,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
         final long currentTime = System.currentTimeMillis();
         volleyReqQueue = Volley.newRequestQueue(getActivity());
-        String url = "http://54.169.216.87/projectexp/v1/getDetails/"+ LoginPresenter.mGoogleAccount.getEmail();
+        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details)+ LoginPresenter.mGoogleAccount.getEmail();
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
