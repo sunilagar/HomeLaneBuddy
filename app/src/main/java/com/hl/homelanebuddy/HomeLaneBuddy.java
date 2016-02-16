@@ -3,6 +3,7 @@ package com.hl.homelanebuddy;
 import com.crashlytics.android.Crashlytics;
 import com.hl.hlcorelib.HLApplication;
 import com.hl.hlcorelib.HLCoreLib;
+import com.hl.hlcorelib.orm.HLConstants;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -17,5 +18,6 @@ public class HomeLaneBuddy extends HLApplication {
 
         Fabric.with(this, new Crashlytics());
         HLCoreLib.init(getApplicationContext(), false);
+        HLCoreLib.initAppConfig(HLConstants.Environments.DEV_ENVIRONMENT);
     }
 }

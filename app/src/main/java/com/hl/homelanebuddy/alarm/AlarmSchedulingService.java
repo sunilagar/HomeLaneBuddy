@@ -50,7 +50,8 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
         mBundle = intent.getBundleExtra(Constants.BUNDLE);
         mDuration = intent.getStringExtra(Constants.DURATION);
 
-        sendNotification();
+        if (mDuration != null )
+            sendNotification();
 
         // Release the wake lock provided by the BroadcastReceiver.
         AlarmManagerReceiver.completeWakefulIntent(intent);
@@ -89,6 +90,7 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
         mBuilder.setSound(alarmSound);
         mBuilder.setAutoCancel(true);
         mBuilder.setContentIntent(contentIntent);
+        mBuilder.setAutoCancel(true);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         load(Constants.Task.NAME);
 

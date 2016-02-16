@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.hl.hlcorelib.CoreLogger;
+import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
 import com.hl.hlcorelib.mvp.events.HLEventListener;
@@ -71,7 +72,7 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
             mServerConnection = new ServerConnection(mContext);
         }
         final String email = LoginPresenter.mGoogleAccount.getEmail();//To be filled based on the user
-        final String endPoint = "http://54.169.216.87/projectexp/v1/postRatings/"+email;//To be filled when API is ready
+        final String endPoint = HLCoreLib.readProperty(Constants.APPConfig.review_post)+email;//To be filled when API is ready
         try{
             JSONArray tasks = new JSONArray();
 

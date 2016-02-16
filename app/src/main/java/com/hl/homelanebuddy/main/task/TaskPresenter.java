@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
 import com.hl.hlcorelib.mvp.events.HLEventListener;
@@ -31,7 +32,7 @@ import java.util.Date;
 /**
  * Created by hl0395 on 3/2/16.
  */
-public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventListener{
+public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventListener {
 
     TaskListAdapter mTaskAdapter;
     ArrayList<HLObject> taskArray = new ArrayList<>();
@@ -48,25 +49,24 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
     protected void onBindView() {
         super.onBindView();
 
-        if(!hasEventListener(Constants.USER_REVIEW_EVENT, this)){
+        if (!hasEventListener(Constants.USER_REVIEW_EVENT, this)) {
             addEventListener(Constants.USER_REVIEW_EVENT, this);
         }
-        if(!hasEventListener(Constants.NEXT_ALARM_EVENT, this)){
-            addEventListener(Constants.NEXT_ALARM_EVENT, this);
-        }
-        if(!hasEventListener("Refresh", this)){
+        if (!hasEventListener("Refresh", this)) {
             addEventListener("Refresh", this);
         }
         nextAlaram = 0;
         parseData();
     }
+
     RequestQueue volleyReqQueue;
 
     private void parseData() {
 
+        mView.mProgressView.showProgress();
         final long currentTime = System.currentTimeMillis();
         volleyReqQueue = Volley.newRequestQueue(getActivity());
-        String url = "http://54.169.216.87/projectexp/v1/getDetails/"+ LoginPresenter.mGoogleAccount.getEmail();
+        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details)+ LoginPresenter.mGoogleAccount.getEmail();
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -106,19 +106,21 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                                                     }
                                                 }
 
-                                            }
 
-                                        }
-                                    }
-                                        mTaskAdapter = new TaskListAdapter(taskArray);
-                                        mView.mTaskList.setAdapter(mTaskAdapter);
-                                        mTaskAdapter.notifyDataSetChanged();
-                                        setAlarm();
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
 
+                                }
+                            }
+                            mTaskAdapter = new TaskListAdapter(taskArray);
+                            mView.mTaskList.setAdapter(mTaskAdapter);
+                            mTaskAdapter.notifyDataSetChanged();
+                            setAlarm();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        mView.mProgressView.hideProgress();
 
 
                     }
@@ -127,6 +129,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                mView.mProgressView.hideProgress();
 
             }
         });
@@ -159,7 +163,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         HLCoreEvent e = (HLCoreEvent) hlEvent;
         Bundle bundle = e.getmExtra();
 
-        if(e.getType().equals(Constants.USER_REVIEW_EVENT)) {
+        if (e.getType().equals(Constants.USER_REVIEW_EVENT)) {
 
             HLFragmentUtils.HLFragmentTransaction transaction =
                     new HLFragmentUtils.HLFragmentTransaction();
@@ -167,10 +171,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             transaction.mParameters = bundle;
             transaction.mFragmentClass = UserReviewPresenter.class;
             push(transaction);
-        }else if(e.getType().equals(Constants.NEXT_ALARM_EVENT)){
-//            mTaskAdapter.notifyDataSetChanged();
-            parseData();
-        }else if(e.getType().equals("Refresh"))
+        }else if (e.getType().equals("Refresh"))
             parseData();
 
     }
