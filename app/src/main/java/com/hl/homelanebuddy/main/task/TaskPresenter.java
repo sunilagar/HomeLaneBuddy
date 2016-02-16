@@ -11,6 +11,8 @@ import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.crashlytics.android.answers.CustomEvent;
+
+import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
 import com.hl.hlcorelib.mvp.events.HLEventListener;
@@ -34,7 +36,7 @@ import java.util.Date;
 /**
  * Created by hl0395 on 3/2/16.
  */
-public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventListener{
+public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventListener {
 
     TaskListAdapter mTaskAdapter;
     ArrayList<HLObject> taskArray = new ArrayList<>();
@@ -51,44 +53,26 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
     protected void onBindView() {
         super.onBindView();
 
-        if(!hasEventListener(Constants.USER_REVIEW_EVENT, this)){
+        if (!hasEventListener(Constants.USER_REVIEW_EVENT, this)) {
             addEventListener(Constants.USER_REVIEW_EVENT, this);
         }
-        if(!hasEventListener(Constants.NEXT_ALARM_EVENT, this)){
-            addEventListener(Constants.NEXT_ALARM_EVENT, this);
-        }
-        if(!hasEventListener("Refresh", this)){
+        if (!hasEventListener("Refresh", this)) {
             addEventListener("Refresh", this);
         }
         nextAlaram = 0;
         parseData();
     }
+
     RequestQueue volleyReqQueue;
 
-    /**
-     * Called when the fragment is visible to the user and actively running.
-     * This is generally
-     * tied to {@link Activity#onResume() Activity.onResume} of the containing
-     * Activity's lifecycle.
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-        /**
-         * View page
-         */
-        Answers.getInstance().logContentView(new ContentViewEvent()
-                .putContentName("Current View is TaskView ")
-                .putContentType("View Navigation")
-                .putContentId("TaskView")
-                .putCustomAttribute(Constants.CLASS_NAME, TaskPresenter.class.getName()));
-    }
+
 
     private void parseData() {
 
+        mView.mProgressView.showProgress();
         final long currentTime = System.currentTimeMillis();
         volleyReqQueue = Volley.newRequestQueue(getActivity());
-        String url = "http://54.169.216.87/projectexp/v1/getDetails/"+ LoginPresenter.mGoogleAccount.getEmail();
+        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details)+ LoginPresenter.mGoogleAccount.getEmail();
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -108,7 +92,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                                         taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
 
                                         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                                        if (task.getString(Constants.Task.TASK_DATE).length() > 14) {
+                                        if (task.getString(Constants.Task.TASK_DATE).length() > 15) {
                                             Date date = (Date) formatter.parse(task.getString(Constants.Task.TASK_DATE));
 
                                             taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
@@ -128,19 +112,21 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                                                     }
                                                 }
 
-                                            }
 
-                                        }
-                                    }
-                                        mTaskAdapter = new TaskListAdapter(taskArray);
-                                        mView.mTaskList.setAdapter(mTaskAdapter);
-                                        mTaskAdapter.notifyDataSetChanged();
-                                        setAlarm();
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
 
+                                }
+                            }
+                            mTaskAdapter = new TaskListAdapter(taskArray);
+                            mView.mTaskList.setAdapter(mTaskAdapter);
+                            mTaskAdapter.notifyDataSetChanged();
+                            setAlarm();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        mView.mProgressView.hideProgress();
 
 
                     }
@@ -150,6 +136,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                mView.mProgressView.hideProgress();
+
             }
         });
 
@@ -157,18 +145,23 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Current View is TaskView ")
+                .putContentType("View Navigation")
+                .putContentId("TaskView")
+                .putCustomAttribute(Constants.CLASS_NAME, TaskPresenter.class.getName()));
+        if(mTaskAdapter != null)
+            mTaskAdapter.notifyDataSetChanged();
+    }
+
     private void setAlarm(){
         if(nextAlaram != 0) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.Task.TASK_DATE, nextAlaram + "");
             bundle.putString(Constants.Task.TASK_NAME, nextTask);
-
-//            if(System.currentTimeMillis() >= (nextAlaram - 86400000))
-//                bundle.putString("Duration", "1 Day");
-//            else if(System.currentTimeMillis() >= (nextAlaram - 3600000))
-//                bundle.putString("Duration", "1 Hour");
-//            else if(System.currentTimeMillis() >= (nextAlaram - 600000))
-//                bundle.putString("Duration", "10 Mins");
 
             mAlarmMgr = new AlarmManagerReceiver();
 
@@ -181,7 +174,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         HLCoreEvent e = (HLCoreEvent) hlEvent;
         Bundle bundle = e.getmExtra();
 
-        if(e.getType().equals(Constants.USER_REVIEW_EVENT)) {
+        if (e.getType().equals(Constants.USER_REVIEW_EVENT)) {
 
             HLFragmentUtils.HLFragmentTransaction transaction =
                     new HLFragmentUtils.HLFragmentTransaction();
@@ -189,10 +182,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             transaction.mParameters = bundle;
             transaction.mFragmentClass = UserReviewPresenter.class;
             push(transaction);
-        }else if(e.getType().equals(Constants.NEXT_ALARM_EVENT)){
-//            mTaskAdapter.notifyDataSetChanged();
-            parseData();
-        }else if(e.getType().equals("Refresh"))
+        }else if (e.getType().equals("Refresh"))
             parseData();
 
     }

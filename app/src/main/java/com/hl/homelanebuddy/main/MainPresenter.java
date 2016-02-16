@@ -95,9 +95,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
          */
         Answers.getInstance().logCustom(new CustomEvent(Constants.NOTIFICATION).putCustomAttribute(Constants.EMAILID, LoginPresenter.mGoogleAccount.getEmail()));
 
-        HLCoreEvent event = new HLCoreEvent(Constants.NEXT_ALARM_EVENT,
-                null);
-        dispatchEvent(event);
     }
 
     @Override

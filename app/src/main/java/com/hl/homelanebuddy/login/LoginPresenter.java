@@ -176,9 +176,7 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
                         //Strat another Activity Here
                         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                         startActivityForResult(signInIntent, RC_SIGN_IN);
-//                        Answers.getInstance().logCustom(new CustomEvent("Log In")
-//                                .putCustomAttribute("Customer",mGoogleAccount.getEmail() ));
-
+                        if(mGoogleAccount != null)
                         Answers.getInstance().logLogin(new LoginEvent()
                                 .putMethod("Digits")
                                 .putSuccess(true)

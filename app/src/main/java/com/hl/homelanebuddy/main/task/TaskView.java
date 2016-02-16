@@ -11,16 +11,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hl.hlcorelib.HLProgressInterface;
 import com.hl.hlcorelib.mvp.HLView;
 import com.hl.homelanebuddy.R;
+import com.hl.homelanebuddy.views.HLProgressView;
 
 /**
  * Created by hl0395 on 3/2/16.
  */
-public class TaskView implements HLView{
+public class TaskView implements HLView, HLProgressInterface {
 
     private View mView;
     RecyclerView mTaskList;
+
+    HLProgressView mProgressView;
+
     /**
      * Return the enclosing view
      *
@@ -72,7 +77,8 @@ public class TaskView implements HLView{
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
         mView = inflater.inflate(R.layout.task_layout, parent, false);
-        mTaskList = (RecyclerView)mView.findViewById(R.id.task_list);
+        mTaskList = (RecyclerView) mView.findViewById(R.id.task_list);
+        mProgressView = (HLProgressView) mView.findViewById(R.id.progress_view);
         mTaskList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mTaskList.getContext());
         mTaskList.setLayoutManager(mLayoutManager);
@@ -88,4 +94,25 @@ public class TaskView implements HLView{
         });
     }
 
+    @Override
+    public void showProgress() {
+        mProgressView.showProgress();
+        mTaskList.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProgress(String s) {
+
+    }
+
+    @Override
+    public void showError(String error) {
+        mProgressView.showError(error);
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressView.hideProgress();
+        mTaskList.setVisibility(View.VISIBLE);
+    }
 }
