@@ -86,7 +86,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                                         taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
 
                                         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                                        if (task.getString(Constants.Task.TASK_DATE).length() > 14) {
+                                        if (task.getString(Constants.Task.TASK_DATE).length() > 15) {
                                             Date date = (Date) formatter.parse(task.getString(Constants.Task.TASK_DATE));
 
                                             taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
@@ -135,18 +135,18 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mTaskAdapter != null)
+            mTaskAdapter.notifyDataSetChanged();
+    }
+
     private void setAlarm(){
         if(nextAlaram != 0) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.Task.TASK_DATE, nextAlaram + "");
             bundle.putString(Constants.Task.TASK_NAME, nextTask);
-
-//            if(System.currentTimeMillis() >= (nextAlaram - 86400000))
-//                bundle.putString("Duration", "1 Day");
-//            else if(System.currentTimeMillis() >= (nextAlaram - 3600000))
-//                bundle.putString("Duration", "1 Hour");
-//            else if(System.currentTimeMillis() >= (nextAlaram - 600000))
-//                bundle.putString("Duration", "10 Mins");
 
             mAlarmMgr = new AlarmManagerReceiver();
 

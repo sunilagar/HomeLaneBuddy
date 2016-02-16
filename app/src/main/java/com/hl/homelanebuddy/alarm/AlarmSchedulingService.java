@@ -16,6 +16,7 @@ import com.hl.hlcorelib.orm.HLObject;
 import com.hl.hlcorelib.orm.HLQuery;
 import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
+import com.hl.homelanebuddy.login.LoginPresenter;
 import com.hl.homelanebuddy.main.MainPresenter;
 
 import java.text.DateFormat;
@@ -62,18 +63,18 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
                this.getSystemService(Context.NOTIFICATION_SERVICE);
     
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-            new Intent(this, MainPresenter.class), 0);
+            new Intent(this, LoginPresenter.class), 0);
         String title = "";
         String content = "";
 
         if(mBundle != null){
                 title = "HomeLane "+mBundle.getString(Constants.Task.TASK_NAME);
-            if(mDuration.equals("1 day"))
+            if(mDuration.equals(Constants.DURATION_1_DAY))
                 content = "Tomorrow ("+convertTime(Long.parseLong(mBundle.getString(Constants.Task.TASK_DATE)))+")";
-            else if(mDuration.equals("1 hour"))
+            else if(mDuration.equals(Constants.DURATION_1_HOUR))
                 content = "Today, in 1 hour ("+convertTime(Long.parseLong(mBundle.getString(Constants.Task.TASK_DATE)))+")";
             else
-                content = "Today, in 1 min ("+convertTime(Long.parseLong(mBundle.getString(Constants.Task.TASK_DATE)))+")";
+                content = "Today, in 10 mins ("+convertTime(Long.parseLong(mBundle.getString(Constants.Task.TASK_DATE)))+")";
         }
 
         NotificationCompat.Builder mBuilder =
@@ -86,6 +87,7 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
         mBuilder.setSound(alarmSound);
+        mBuilder.setAutoCancel(true);
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         load(Constants.Task.NAME);
