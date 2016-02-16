@@ -28,6 +28,14 @@ public final class Constants {
     public static final String DURATION_1_DAY = "1 Day";
     public static final String DURATION_1_HOUR = "1 Hour";
     public static final String DURATION_10_MINS = "10 Mins";
+    
+    public static final String NOTIFICATION = "Notification";
+
+    public static final String CLASS_NAME= "ClassName";
+    public static final String EMAILID = "EmailId";
+
+
+
 
     public static final class APPConfig{
         public static final String review_post = "review_post";
