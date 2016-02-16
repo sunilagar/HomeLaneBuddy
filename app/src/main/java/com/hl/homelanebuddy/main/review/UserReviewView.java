@@ -7,10 +7,15 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
+import com.crashlytics.android.answers.RatingEvent;
 import com.hl.hlcorelib.mvp.HLView;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
+import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
+import com.hl.homelanebuddy.login.LoginPresenter;
 
 /**
  * Created by hl0204 on 3/2/16.
@@ -38,9 +43,21 @@ public class UserReviewView implements HLView {
                         ((TextView)mView.findViewById(R.id.comment_input)).getText().toString());
                 final HLCoreEvent event = new HLCoreEvent(SUBMIT_CLICK_EVENT, data);
                 HLEventDispatcher.acquire().dispatchEvent(event);
+
+                /**
+                 * Reviewers Email ID
+                 */
+                Answers.getInstance().logRating(new RatingEvent()
+                        .putRating(new Integer(getUserReview()))
+                        .putContentName(((TextView)mView.findViewById(R.id.event_name)).getText().toString())
+                        .putContentType("Review Rating")
+                        .putContentId("Review"));
+//                Answers.getInstance().logCustom(new CustomEvent(Constants.REVIEW).putCustomAttribute(Constants.EMAILID, LoginPresenter.mGoogleAccount.getEmail()));
             }
         });
     }
+
+
 
     /**
      * function which will set the task name
@@ -90,4 +107,5 @@ public class UserReviewView implements HLView {
     public void onRecreateInstanceState(Bundle bundle) {
 
     }
+
 }

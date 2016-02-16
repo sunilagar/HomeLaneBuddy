@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.hl.hlcorelib.mvp.HLView;
 import com.hl.homelanebuddy.R;
-import com.hl.homelanebuddy.views.HLProgressView;
 
 /**
  * Created by hl0395 on 3/2/16.

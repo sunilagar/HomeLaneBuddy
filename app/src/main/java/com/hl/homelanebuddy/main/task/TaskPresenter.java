@@ -8,6 +8,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+import com.crashlytics.android.answers.CustomEvent;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
 import com.hl.hlcorelib.mvp.events.HLEventListener;
@@ -62,6 +65,25 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
     }
     RequestQueue volleyReqQueue;
 
+    /**
+     * Called when the fragment is visible to the user and actively running.
+     * This is generally
+     * tied to {@link Activity#onResume() Activity.onResume} of the containing
+     * Activity's lifecycle.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        /**
+         * View page
+         */
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Current View is TaskView ")
+                .putContentType("View Navigation")
+                .putContentId("TaskView")
+                .putCustomAttribute(Constants.CLASS_NAME, TaskPresenter.class.getName()));
+    }
+
     private void parseData() {
 
         final long currentTime = System.currentTimeMillis();
@@ -75,7 +97,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
                                     try{
 
-                                        taskArray.clear();
+                                    taskArray.clear();
                                     JSONObject tasks = new JSONObject(jsonString);
 
                                     JSONArray taskList = tasks.getJSONArray("Details");
