@@ -10,6 +10,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+import com.crashlytics.android.answers.CustomEvent;
+
 import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
@@ -107,6 +111,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
     RequestQueue volleyReqQueue;
 
+
+
     private void parseData() {
 
         mView.mProgressView.showProgress();
@@ -121,7 +127,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
                                     try{
 
-                                        taskArray.clear();
+                                    taskArray.clear();
                                     JSONObject tasks = new JSONObject(jsonString);
 
                                     JSONArray taskList = tasks.getJSONArray("Details");
@@ -190,6 +196,11 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
     @Override
     public void onResume() {
         super.onResume();
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Current View is TaskView ")
+                .putContentType("View Navigation")
+                .putContentId("TaskView")
+                .putCustomAttribute(Constants.CLASS_NAME, TaskPresenter.class.getName()));
         if(mTaskAdapter != null)
             mTaskAdapter.notifyDataSetChanged();
     }

@@ -5,6 +5,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+import com.crashlytics.android.answers.CustomEvent;
 import com.hl.hlcorelib.CoreLogger;
 import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
@@ -44,6 +47,25 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
     @Override
     protected Class<UserReviewView> getVuClass() {
         return UserReviewView.class;
+    }
+
+    /**
+     * Called when the fragment is visible to the user and actively running.
+     * This is generally
+     * tied to {@link Activity#onResume() Activity.onResume} of the containing
+     * Activity's lifecycle.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        /**
+         * View page
+         */
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Current View is UserReviewView ")
+                .putContentType("View Navigation")
+                .putContentId("UserReviewView")
+                .putCustomAttribute(Constants.CLASS_NAME, UserReviewPresenter.class.getName()));
     }
 
     @Override
