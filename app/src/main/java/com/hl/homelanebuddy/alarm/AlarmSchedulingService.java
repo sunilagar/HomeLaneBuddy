@@ -148,7 +148,7 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
                 NEXT_TIMESTAMP = l1;
                 NEXT_TASK = tName;
             }else{
-                if(NEXT_TIMESTAMP > l1) {
+                if((NEXT_TIMESTAMP + Constants.MINS_10_MILLSECOND) > l1) {
                     NEXT_TIMESTAMP = l1;
                     NEXT_TASK = tName;
                 }

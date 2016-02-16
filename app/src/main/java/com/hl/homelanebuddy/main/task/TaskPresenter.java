@@ -100,7 +100,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                                                     nextAlaram = date.getTime();
                                                     nextTask = task.getString(Constants.Task.TASK_NAME);
                                                 } else {
-                                                    if (nextAlaram > date.getTime()) {
+                                                    if ((nextAlaram + Constants.MINS_10_MILLSECOND) >=
+                                                            date.getTime()) {
                                                         nextAlaram = date.getTime();
                                                         nextTask = task.getString(Constants.Task.TASK_NAME);
                                                     }
