@@ -69,12 +69,12 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
 
         if(mBundle != null){
                 title = "HomeLane "+mBundle.getString(Constants.Task.TASK_NAME);
-            if(mDuration.equals("1 day"))
+            if(mDuration.equals("1 Day"))
                 content = "Tomorrow ("+convertTime(Long.parseLong(mBundle.getString(Constants.Task.TASK_DATE)))+")";
-            else if(mDuration.equals("1 hour"))
+            else if(mDuration.equals("1 Hour"))
                 content = "Today, in 1 hour ("+convertTime(Long.parseLong(mBundle.getString(Constants.Task.TASK_DATE)))+")";
             else
-                content = "Today, in 1 min ("+convertTime(Long.parseLong(mBundle.getString(Constants.Task.TASK_DATE)))+")";
+                content = "Today, in 10 min ("+convertTime(Long.parseLong(mBundle.getString(Constants.Task.TASK_DATE)))+")";
         }
 
         NotificationCompat.Builder mBuilder =

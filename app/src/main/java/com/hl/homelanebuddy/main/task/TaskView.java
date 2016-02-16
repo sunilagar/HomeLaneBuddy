@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.hl.hlcorelib.HLProgressInterface;
 import com.hl.hlcorelib.mvp.HLView;
@@ -25,6 +27,8 @@ public class TaskView implements HLView, HLProgressInterface {
     RecyclerView mTaskList;
 
     HLProgressView mProgressView;
+    RelativeLayout mRelativeLayout;
+    TextView mErrorText;
 
     /**
      * Return the enclosing view
@@ -77,8 +81,10 @@ public class TaskView implements HLView, HLProgressInterface {
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
         mView = inflater.inflate(R.layout.task_layout, parent, false);
+        mRelativeLayout = (RelativeLayout) mView.findViewById(R.id.relative_layout);
         mTaskList = (RecyclerView) mView.findViewById(R.id.task_list);
         mProgressView = (HLProgressView) mView.findViewById(R.id.progress_view);
+        mErrorText = (TextView) mView.findViewById(R.id.error_display);
         mTaskList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mTaskList.getContext());
         mTaskList.setLayoutManager(mLayoutManager);

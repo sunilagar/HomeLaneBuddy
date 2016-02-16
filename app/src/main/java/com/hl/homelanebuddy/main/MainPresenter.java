@@ -21,7 +21,6 @@ import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
 import com.hl.hlcorelib.utils.HLFragmentUtils;
-import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 import com.hl.homelanebuddy.login.LoginPresenter;
 import com.hl.homelanebuddy.main.task.TaskPresenter;
@@ -88,9 +87,9 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        HLCoreEvent event = new HLCoreEvent(Constants.NEXT_ALARM_EVENT,
-                null);
-        dispatchEvent(event);
+//        HLCoreEvent event = new HLCoreEvent(Constants.NEXT_ALARM_EVENT,
+//                null);
+//        dispatchEvent(event);
     }
 
     @Override

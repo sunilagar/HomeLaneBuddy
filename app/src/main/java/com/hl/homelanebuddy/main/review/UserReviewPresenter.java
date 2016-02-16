@@ -3,6 +3,7 @@ package com.hl.homelanebuddy.main.review;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.hl.hlcorelib.CoreLogger;
 import com.hl.hlcorelib.HLCoreLib;
@@ -96,6 +97,7 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("taskRatings", tasks);
+            Log.d("ratings---",jsonObject.toString());
 
             mServerConnection.doPost(endPoint, null, jsonObject.toString(), -1,
                     new ServerConnection.ServerConnectionListener(){

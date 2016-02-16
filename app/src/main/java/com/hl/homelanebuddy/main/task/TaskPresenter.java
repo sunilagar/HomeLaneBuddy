@@ -1,6 +1,8 @@
 package com.hl.homelanebuddy.main.task;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,6 +17,7 @@ import com.hl.hlcorelib.mvp.events.HLEventListener;
 import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
 import com.hl.hlcorelib.utils.HLFragmentUtils;
+import com.hl.hlcorelib.utils.HLNetworkUtils;
 import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 import com.hl.homelanebuddy.alarm.AlarmManagerReceiver;
@@ -59,7 +62,50 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             addEventListener("Refresh", this);
         }
         nextAlaram = 0;
-        parseData();
+    }
+
+    /**
+     * Function to show the snack bar
+     */
+    private void showSnackBar(){
+        final Snackbar snackbar = Snackbar.make(mView.mRelativeLayout,
+                getResources().getString(R.string.internet_connection), Snackbar.LENGTH_LONG);
+        showErrorText(getResources().getString(R.string.internet_connection));
+        snackbar.setAction("RETRY", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkInternetParseData();
+            }
+        }).show();
+
+    }
+
+    /**
+     * Function to show error text
+     * @param text error text
+     */
+    private void showErrorText(String text) {
+        if (mView.mTaskList!=null)
+            mView.mTaskList.setVisibility(View.GONE);
+        mView.mErrorText.setVisibility(View.VISIBLE);
+        mView.mErrorText.setText(text);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        checkInternetParseData();
+    }
+
+    /**Function to check the internet if yes parse the data
+     * else shows Snack bar
+     *
+     */
+    private void checkInternetParseData(){
+        if (HLNetworkUtils.isNetworkAvailable(getActivity()))
+            parseData();
+        else
+            showSnackBar();
     }
 
     RequestQueue volleyReqQueue;
@@ -114,27 +160,29 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
                                 }
                             }
-                            mTaskAdapter = new TaskListAdapter(taskArray);
-                            mView.mTaskList.setAdapter(mTaskAdapter);
-                            mTaskAdapter.notifyDataSetChanged();
-                            setAlarm();
+                            if (taskArray.size()>0){
+                                mTaskAdapter = new TaskListAdapter(taskArray);
+                                mView.mTaskList.setVisibility(View.VISIBLE);
+                                mView.mErrorText.setVisibility(View.GONE);
+                                mView.mTaskList.setAdapter(mTaskAdapter);
+                                mTaskAdapter.notifyDataSetChanged();
+                                setAlarm();
+                            }else{
+                                showErrorText(getResources().getString(R.string.no_tasks));
+                            }
 
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                         mView.mProgressView.hideProgress();
-
-
                     }
 
 
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
-                mView.mProgressView.hideProgress();
-
+                if (isVisible())
+                    showErrorText(getResources().getString(R.string.volley_error));
             }
         });
 
@@ -174,12 +222,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             transaction.mParameters = bundle;
             transaction.mFragmentClass = UserReviewPresenter.class;
             push(transaction);
-        } else if (e.getType().equals(Constants.NEXT_ALARM_EVENT)) {
-//            mTaskAdapter.notifyDataSetChanged();
-            parseData();
         } else if (e.getType().equals("Refresh"))
-            parseData();
-
+            checkInternetParseData();
     }
 
     @Override
