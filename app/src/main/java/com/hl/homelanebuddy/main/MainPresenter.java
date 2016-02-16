@@ -86,10 +86,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
-//        HLCoreEvent event = new HLCoreEvent(Constants.NEXT_ALARM_EVENT,
-//                null);
-//        dispatchEvent(event);
     }
 
     @Override

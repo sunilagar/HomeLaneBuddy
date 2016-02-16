@@ -20,8 +20,6 @@ public final class Constants {
     }
 
     public static final String USER_REVIEW_EVENT = "USER_REVIEW_EVENT";
-    public static final String NEXT_ALARM_EVENT = "NEXT_ALARM_EVENT";
-
 
     public static final long DAY_1_MILLSECOND = 86400000;
     public static final long HOUR_1_MILLSECOND = 3600000;

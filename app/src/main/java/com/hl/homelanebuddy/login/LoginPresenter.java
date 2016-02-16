@@ -151,8 +151,9 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
                         //Start another Activity Here
                         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                         startActivityForResult(signInIntent, RC_SIGN_IN);
-                        Answers.getInstance().logCustom(new CustomEvent("Login")
-                                .putCustomAttribute("Customer",mGoogleAccount.getEmail() ));
+                        if(mGoogleAccount != null)
+                            Answers.getInstance().logCustom(new CustomEvent("Login")
+                                    .putCustomAttribute("Customer",mGoogleAccount.getEmail() ));
 
                     default:
                         break;

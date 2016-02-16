@@ -55,9 +55,6 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         if (!hasEventListener(Constants.USER_REVIEW_EVENT, this)) {
             addEventListener(Constants.USER_REVIEW_EVENT, this);
         }
-        if (!hasEventListener(Constants.NEXT_ALARM_EVENT, this)) {
-            addEventListener(Constants.NEXT_ALARM_EVENT, this);
-        }
         if (!hasEventListener("Refresh", this)) {
             addEventListener("Refresh", this);
         }
@@ -122,39 +119,39 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                     @Override
                     public void onResponse(final String jsonString) {
 
-                        try {
-                            mView.mProgressView.showProgress();
+                                    try{
 
-                            taskArray.clear();
-                            JSONObject tasks = new JSONObject(jsonString);
+                                        taskArray.clear();
+                                    JSONObject tasks = new JSONObject(jsonString);
 
-                            JSONArray taskList = tasks.getJSONArray("Details");
+                                    JSONArray taskList = tasks.getJSONArray("Details");
 
-                            for (int i = 0; i < taskList.length(); i++) {
-                                JSONObject task = taskList.getJSONObject(i);
-                                HLObject taskObj = new HLObject(Constants.Task.NAME);
-                                taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
+                                    for (int i = 0; i < taskList.length(); i++) {
+                                        JSONObject task = taskList.getJSONObject(i);
+                                        HLObject taskObj = new HLObject(Constants.Task.NAME);
+                                        taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
 
-                                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                                if (task.getString(Constants.Task.TASK_DATE).length() > 14) {
-                                    Date date = (Date) formatter.parse(task.getString(Constants.Task.TASK_DATE));
+                                        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                        if (task.getString(Constants.Task.TASK_DATE).length() > 15) {
+                                            Date date = (Date) formatter.parse(task.getString(Constants.Task.TASK_DATE));
 
-                                    taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
-                                    taskObj.put(Constants.Task.TASK_ASSIGNED_TO, task.getString(Constants.Task.TASK_ASSIGNED_TO));
-                                    taskObj.put(Constants.Task.TASK_TYPE, task.getString(Constants.Task.TASK_TYPE));
-                                    taskObj.save();
-                                    taskArray.add(taskObj);
+                                            taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
+                                            taskObj.put(Constants.Task.TASK_ASSIGNED_TO, task.getString(Constants.Task.TASK_ASSIGNED_TO));
+                                            taskObj.put(Constants.Task.TASK_TYPE, task.getString(Constants.Task.TASK_TYPE));
+                                            taskObj.save();
+                                            taskArray.add(taskObj);
 
-                                    if (date.getTime() > currentTime) {
-                                        if (nextAlaram == 0) {
-                                            nextAlaram = date.getTime();
-                                            nextTask = task.getString(Constants.Task.TASK_NAME);
-                                        } else {
-                                            if (nextAlaram > date.getTime()) {
-                                                nextAlaram = date.getTime();
-                                                nextTask = task.getString(Constants.Task.TASK_NAME);
-                                            }
-                                        }
+                                            if (date.getTime() > currentTime) {
+                                                if (nextAlaram == 0) {
+                                                    nextAlaram = date.getTime();
+                                                    nextTask = task.getString(Constants.Task.TASK_NAME);
+                                                } else {
+                                                    if (nextAlaram > date.getTime()) {
+                                                        nextAlaram = date.getTime();
+                                                        nextTask = task.getString(Constants.Task.TASK_NAME);
+                                                    }
+                                                }
+
 
                                     }
 
@@ -190,18 +187,18 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
     }
 
-    private void setAlarm() {
-        if (nextAlaram != 0) {
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mTaskAdapter != null)
+            mTaskAdapter.notifyDataSetChanged();
+    }
+
+    private void setAlarm(){
+        if(nextAlaram != 0) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.Task.TASK_DATE, nextAlaram + "");
             bundle.putString(Constants.Task.TASK_NAME, nextTask);
-
-//            if(System.currentTimeMillis() >= (nextAlaram - 86400000))
-//                bundle.putString("Duration", "1 Day");
-//            else if(System.currentTimeMillis() >= (nextAlaram - 3600000))
-//                bundle.putString("Duration", "1 Hour");
-//            else if(System.currentTimeMillis() >= (nextAlaram - 600000))
-//                bundle.putString("Duration", "10 Mins");
 
             mAlarmMgr = new AlarmManagerReceiver();
 
@@ -224,6 +221,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             push(transaction);
         } else if (e.getType().equals("Refresh"))
             checkInternetParseData();
+
     }
 
     @Override
