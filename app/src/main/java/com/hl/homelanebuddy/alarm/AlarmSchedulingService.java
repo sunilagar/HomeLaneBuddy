@@ -121,10 +121,10 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
             for (int i = 0; i < list.size(); i++) {
                 HLObject tasks = list.get(i);
 
-                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                Date date = (Date) formatter.parse(tasks.getString(Constants.Task.TASK_DATE));
+//                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+//                Date date = (Date) formatter.parse(tasks.getString(Constants.Task.TASK_DATE));
 
-                compare(date.getTime(), tasks.getString(Constants.Task.TASK_NAME));
+                compare(Long.parseLong(tasks.getString(Constants.Task.TASK_DATE)), tasks.getString(Constants.Task.TASK_NAME));
             }
             if (NEXT_TIMESTAMP != 0) {
                 Bundle bundle = new Bundle();
