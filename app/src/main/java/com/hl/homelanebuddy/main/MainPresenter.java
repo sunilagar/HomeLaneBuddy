@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -72,6 +74,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
 
     }
 
+
     /**
      * Handle onNewIntent() to inform the fragment manager that the
      * state is not saved.  If you are handling new intents and may be
@@ -87,10 +90,11 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
-        HLCoreEvent event = new HLCoreEvent(Constants.NEXT_ALARM_EVENT,
-                null);
-        dispatchEvent(event);
+        /**
+         * View page
+         */
+        Answers.getInstance().logCustom(new CustomEvent(Constants.NOTIFICATION).putCustomAttribute(Constants.EMAILID,
+                LoginPresenter.mGoogleAccount.getEmail()));
     }
 
     @Override

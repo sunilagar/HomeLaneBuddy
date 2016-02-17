@@ -30,6 +30,7 @@
         </activity>
 
         <activity android:name=".login.LoginPresenter"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar"/>
         <meta-data
             android:name="io.fabric.ApiKey"

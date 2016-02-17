@@ -26,22 +26,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.hlcorelib.orm.HLObject;
-import com.hl.hlcorelib.orm.HLUser;
-import com.hl.hlcorelib.utils.HLFragmentUtils;
 import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 
 import java.text.Format;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

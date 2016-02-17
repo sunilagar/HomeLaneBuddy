@@ -12,7 +12,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.crashlytics.android.answers.CustomEvent;
+import com.crashlytics.android.answers.LoginEvent;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -25,8 +27,9 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
 import com.hl.hlcorelib.utils.HLNetworkUtils;
-import com.hl.homelanebuddy.main.MainPresenter;
+import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
+import com.hl.homelanebuddy.main.MainPresenter;
 
 public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implements
         GoogleApiClient.OnConnectionFailedListener{
@@ -76,7 +79,7 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
      * Function to show the snack bar
      */
     private void showSnackBar(){
-        final Snackbar snackbar = Snackbar.make(mView.mSignInButton, "Please check your internet connection.", Snackbar.LENGTH_LONG);
+        final Snackbar snackbar = Snackbar.make(mView.mSignInButton, getResources().getString(R.string.internet_connection), Snackbar.LENGTH_LONG);
         snackbar.setAction("RETRY", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +90,28 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
             }
         }).show();
 
+    }
+
+    /**
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are <em>not</em> resumed.  This means
+     * that in some cases the previous state may still be saved, not allowing
+     * fragment transactions that modify the state.  To correctly interact
+     * with fragments in their proper state, you should instead override
+     * {@link #onResumeFragments()}.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**
+         * View page
+         */
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Current View is LoginView ")
+                .putContentType("View Navigation")
+                .putContentId("LoginView")
+                .putCustomAttribute(Constants.CLASS_NAME, LoginPresenter.class.getName()));
     }
 
     @Override
@@ -148,12 +173,14 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     case 1:
-                        //Strat another Activity Here
+                        //Start another Activity Here
                         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                         startActivityForResult(signInIntent, RC_SIGN_IN);
-                        Answers.getInstance().logCustom(new CustomEvent("Login")
-                                .putCustomAttribute("Customer",mGoogleAccount.getEmail() ));
-
+                        if(mGoogleAccount != null)
+                        Answers.getInstance().logLogin(new LoginEvent()
+                                .putMethod("Digits")
+                                .putSuccess(true)
+                                .putCustomAttribute("Customer",mGoogleAccount.getEmail()));
                     default:
                         break;
                 }

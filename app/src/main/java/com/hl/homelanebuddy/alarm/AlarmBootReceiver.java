@@ -63,10 +63,10 @@ public class AlarmBootReceiver extends BroadcastReceiver implements HLLoaderInte
             try {
                 HLObject tasks = list.get(i);
 
-                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                Date date = (Date) formatter.parse(tasks.getString(Constants.Task.TASK_DATE));
+//                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+//                Date date = (Date) formatter.parse(tasks.getString(Constants.Task.TASK_DATE));
 
-                compare(date.getTime(), tasks.getString(Constants.Task.TASK_NAME));
+                compare(Long.parseLong(tasks.getString(Constants.Task.TASK_DATE)), tasks.getString(Constants.Task.TASK_NAME));
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -92,7 +92,7 @@ public class AlarmBootReceiver extends BroadcastReceiver implements HLLoaderInte
                 NEXT_TIMESTAMP = l1;
                 NEXT_TASK = tName;
             }else{
-                if(NEXT_TIMESTAMP > l1) {
+                if(NEXT_TIMESTAMP < l1 && (NEXT_TIMESTAMP - Constants.MINS_10_MILLSECOND) < current) {
                     NEXT_TIMESTAMP = l1;
                     NEXT_TASK = tName;
                 }

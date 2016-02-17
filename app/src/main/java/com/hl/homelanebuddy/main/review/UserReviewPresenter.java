@@ -3,8 +3,13 @@ package com.hl.homelanebuddy.main.review;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+import com.crashlytics.android.answers.CustomEvent;
 import com.hl.hlcorelib.CoreLogger;
+import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
 import com.hl.hlcorelib.mvp.events.HLEventListener;
@@ -44,6 +49,25 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
         return UserReviewView.class;
     }
 
+    /**
+     * Called when the fragment is visible to the user and actively running.
+     * This is generally
+     * tied to {@link Activity#onResume() Activity.onResume} of the containing
+     * Activity's lifecycle.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        /**
+         * View page
+         */
+        Answers.getInstance().logContentView(new ContentViewEvent()
+                .putContentName("Current View is UserReviewView ")
+                .putContentType("View Navigation")
+                .putContentId("UserReviewView")
+                .putCustomAttribute(Constants.CLASS_NAME, UserReviewPresenter.class.getName()));
+    }
+
     @Override
     protected int getMenuLayout() {
         return 0;
@@ -71,7 +95,7 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
             mServerConnection = new ServerConnection(mContext);
         }
         final String email = LoginPresenter.mGoogleAccount.getEmail();//To be filled based on the user
-        final String endPoint = "http://54.169.216.87/projectexp/v1/postRatings/"+email;//To be filled when API is ready
+        final String endPoint = HLCoreLib.readProperty(Constants.APPConfig.review_post)+email;//To be filled when API is ready
         try{
             JSONArray tasks = new JSONArray();
 
@@ -95,6 +119,7 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("taskRatings", tasks);
+            Log.d("ratings---",jsonObject.toString());
 
             mServerConnection.doPost(endPoint, null, jsonObject.toString(), -1,
                     new ServerConnection.ServerConnectionListener(){
