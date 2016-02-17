@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.RatingBar;
+import android.widget.Toast;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
-import com.crashlytics.android.answers.CustomEvent;
 import com.hl.hlcorelib.CoreLogger;
 import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 /**
  * Created by hl0204 on 3/2/16.
  */
-public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implements HLEventListener {
+public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implements HLEventListener,RatingBar.OnRatingBarChangeListener {
 
     private ServerConnection mServerConnection;
 
@@ -39,6 +40,7 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
             addEventListener(UserReviewView.SUBMIT_CLICK_EVENT, this);
         }
         mView.setTaskName(getArguments().getString(Constants.Task.TASK_NAME));
+        mView.mRatingBar.setOnRatingBarChangeListener(this);
         mContext = getActivity();
     }
 
@@ -102,6 +104,7 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
             final JSONObject object = new JSONObject();
             object.put("name", getArguments().get(Constants.Task.TASK_NAME));
             object.put("rating", data.get(UserReviewView.USER_REVIEW));
+            Toast.makeText(getActivity(), data.getString(UserReviewView.USER_REVIEW) , Toast.LENGTH_LONG).show();
             object.put("type", data.get(UserReviewView.USER_COMMENT));
 
             tasks.put(object);
@@ -155,5 +158,22 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
         super.onDestroyHLView();
         mServerConnection = null;
         removeEventListener(UserReviewView.SUBMIT_CLICK_EVENT,this);
+    }
+
+    /**
+     * Notification that the rating has changed. Clients can use the
+     * fromUser parameter to distinguish user-initiated changes from those
+     * that occurred programmatically. This will not be called continuously
+     * while the user is dragging, only when the user finalizes a rating by
+     * lifting the touch.
+     *
+     * @param ratingBar The RatingBar whose rating has changed.
+     * @param rating    The current rating. This will be in the range
+     *                  0..numStars.
+     * @param fromUser  True if the rating change was initiated by a user's
+     */
+    @Override
+    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+        mView.setStarColor(rating);
     }
 }

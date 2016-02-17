@@ -39,11 +39,27 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/event_icon"/>
 
-        <LinearLayout
-            android:layout_margin="10dp"
+        <RatingBar
             android:layout_below="@+id/event_name"
+            android:layout_toRightOf="@+id/event_icon"
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="44dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rate"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/ratingBar"/>
+
+        <LinearLayout
+            android:layout_below="@+id/rate"
             android:orientation="vertical"
             android:id="@+id/form_container"
+            android:layout_centerHorizontal="true"
             android:layout_toRightOf="@+id/event_icon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -51,6 +67,7 @@
             <RadioGroup
                 android:layout_marginTop="20dp"
                 android:id="@+id/radio_group"
+                android:visibility="gone"
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -72,7 +89,6 @@
                     android:button="@null"
                     android:id="@+id/bad_button"
                     android:layout_marginLeft="10dp"
-
                     android:background="@drawable/review_bad_drawable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -81,9 +97,10 @@
 
             <EditText
                 android:id="@+id/comment_input"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:hint="Please enter your feedback..."
                 android:lines="5"
+                android:layout_toRightOf="@+id/event_icon"
                 android:layout_height="wrap_content" />
             <Button
                 android:backgroundTint="@color/colorPrimaryDark"
