@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,6 +26,8 @@ public class TaskView implements HLView, HLProgressInterface {
     RecyclerView mTaskList;
 
     HLProgressView mProgressView;
+
+    SwipeRefreshLayout mSwifeRefreshLayout;
 
     /**
      * Return the enclosing view
@@ -79,6 +82,7 @@ public class TaskView implements HLView, HLProgressInterface {
         mView = inflater.inflate(R.layout.task_layout, parent, false);
         mTaskList = (RecyclerView) mView.findViewById(R.id.task_list);
         mProgressView = (HLProgressView) mView.findViewById(R.id.progress_view);
+        mSwifeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.swipe);
         mTaskList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mTaskList.getContext());
         mTaskList.setLayoutManager(mLayoutManager);

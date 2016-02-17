@@ -1,6 +1,8 @@
 package com.hl.homelanebuddy.main.task;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,7 +33,7 @@ import java.util.Date;
 /**
  * Created by hl0395 on 3/2/16.
  */
-public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventListener {
+public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventListener, SwipeRefreshLayout.OnRefreshListener {
 
     TaskListAdapter mTaskAdapter;
     ArrayList<HLObject> taskArray = new ArrayList<>();
@@ -57,14 +59,25 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         if (!hasEventListener("Refresh", this)) {
             addEventListener("Refresh", this);
         }
+        mView.mSwifeRefreshLayout.setColorSchemeColors(R.color.light_blue);
         nextAlaram = 0;
+        mTaskAdapter = new TaskListAdapter(null);
+        mView.mTaskList.setAdapter(mTaskAdapter);
+        mTaskAdapter.notifyDataSetChanged();
         parseData();
+        mView.mSwifeRefreshLayout.setOnRefreshListener(this);
+
+        mView.mSwifeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mView.mSwifeRefreshLayout.setRefreshing(true);
+            }
+        });
     }
 
     RequestQueue volleyReqQueue;
 
     private void parseData() {
-
         mView.mProgressView.showProgress();
         final long currentTime = System.currentTimeMillis();
         volleyReqQueue = Volley.newRequestQueue(getActivity());
@@ -116,6 +129,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                             mTaskAdapter = new TaskListAdapter(taskArray);
                             mView.mTaskList.setAdapter(mTaskAdapter);
                             mTaskAdapter.notifyDataSetChanged();
+
                             setAlarm();
 
                         } catch (Exception e) {
@@ -123,6 +137,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                         }
 
                         mView.mProgressView.hideProgress();
+                        mView.mSwifeRefreshLayout.setRefreshing(false);
 
 
                     }
@@ -133,6 +148,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             public void onErrorResponse(VolleyError error) {
 
                 mView.mProgressView.hideProgress();
+                mView.mSwifeRefreshLayout.setRefreshing(false);
 
             }
         });
@@ -197,5 +213,11 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
     @Override
     protected int[] getDisabledMenuItems() {
         return new int[0];
+    }
+
+    @Override
+    public void onRefresh() {
+        parseData();
+
     }
 }
