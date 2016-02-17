@@ -106,8 +106,9 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                                                     nextAlaram = date.getTime();
                                                     nextTask = task.getString(Constants.Task.TASK_NAME);
                                                 } else {
-                                                    if ((nextAlaram + Constants.MINS_10_MILLSECOND) >=
-                                                            date.getTime()) {
+                                                    if (nextAlaram < date.getTime() &&
+                                                            (nextAlaram - Constants.MINS_10_MILLSECOND) < currentTime) {
+
                                                         nextAlaram = date.getTime();
                                                         nextTask = task.getString(Constants.Task.TASK_NAME);
                                                     }
@@ -160,13 +161,16 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
     private void setAlarm(){
         if(nextAlaram != 0) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.Task.TASK_DATE, nextAlaram + "");
-            bundle.putString(Constants.Task.TASK_NAME, nextTask);
+            if((System.currentTimeMillis() + Constants.MINS_10_MILLSECOND) <= nextAlaram ) {
 
-            mAlarmMgr = new AlarmManagerReceiver();
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.Task.TASK_DATE, nextAlaram + "");
+                bundle.putString(Constants.Task.TASK_NAME, nextTask);
 
-            mAlarmMgr.setAlarm(getActivity(), bundle);
+                mAlarmMgr = new AlarmManagerReceiver();
+
+                mAlarmMgr.setAlarm(getActivity(), bundle);
+            }
         }
     }
 

@@ -127,10 +127,14 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
                 compare(Long.parseLong(tasks.getString(Constants.Task.TASK_DATE)), tasks.getString(Constants.Task.TASK_NAME));
             }
             if (NEXT_TIMESTAMP != 0) {
-                Bundle bundle = new Bundle();
-                bundle.putString(Constants.Task.TASK_DATE, NEXT_TIMESTAMP + "");
-                bundle.putString(Constants.Task.TASK_NAME, NEXT_TASK);
-                alarm.setAlarm(this, bundle);
+
+                if((System.currentTimeMillis() + Constants.MINS_10_MILLSECOND) <= NEXT_TIMESTAMP ) {
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.Task.TASK_DATE, NEXT_TIMESTAMP + "");
+                    bundle.putString(Constants.Task.TASK_NAME, NEXT_TASK);
+                    alarm.setAlarm(this, bundle);
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -148,7 +152,8 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
                 NEXT_TIMESTAMP = l1;
                 NEXT_TASK = tName;
             }else{
-                if((NEXT_TIMESTAMP + Constants.MINS_10_MILLSECOND) > l1) {
+                if(NEXT_TIMESTAMP < l1 &&
+                        (NEXT_TIMESTAMP - Constants.MINS_10_MILLSECOND) < current) {
                     NEXT_TIMESTAMP = l1;
                     NEXT_TASK = tName;
                 }
