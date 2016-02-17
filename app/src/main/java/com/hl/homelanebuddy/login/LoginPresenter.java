@@ -79,7 +79,7 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
      * Function to show the snack bar
      */
     private void showSnackBar(){
-        final Snackbar snackbar = Snackbar.make(mView.mSignInButton, "Please check your internet connection.", Snackbar.LENGTH_LONG);
+        final Snackbar snackbar = Snackbar.make(mView.mSignInButton, getResources().getString(R.string.internet_connection), Snackbar.LENGTH_LONG);
         snackbar.setAction("RETRY", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,7 +173,7 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     case 1:
-                        //Strat another Activity Here
+                        //Start another Activity Here
                         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                         startActivityForResult(signInIntent, RC_SIGN_IN);
                         if(mGoogleAccount != null)

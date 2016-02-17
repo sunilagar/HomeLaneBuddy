@@ -70,6 +70,7 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
 
         if(mBundle != null){
                 title = "HomeLane "+mBundle.getString(Constants.Task.TASK_NAME);
+
             if(mDuration.equals(Constants.DURATION_1_DAY))
                 content = "Tomorrow ("+convertTime(Long.parseLong(mBundle.getString(Constants.Task.TASK_DATE)))+")";
             else if(mDuration.equals(Constants.DURATION_1_HOUR))
