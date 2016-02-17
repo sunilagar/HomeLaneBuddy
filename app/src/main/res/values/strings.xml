@@ -21,6 +21,12 @@
     <string name="volley_error">Server Error</string>
     <string name="no_tasks">No Tasks Found</string>
 
+    <string name="hated_it">Hated it</string>
+    <string name="disliked_it">Disliked it</string>
+    <string name="it_is_ok">It\'s OK</string>
+    <string name="liked_it">Liked it</string>
+    <string name="loved_it">Loved it</string>
+
 
     <string name="call_homelane">Your HomeLane Team</string>
 
