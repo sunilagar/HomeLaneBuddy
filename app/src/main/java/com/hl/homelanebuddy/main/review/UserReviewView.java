@@ -33,7 +33,6 @@ public class UserReviewView implements HLView {
 
     private View mView;
     RatingBar mRatingBar;
-    String mRating ;
     TextView mRateText;
     CheckedTextView mSendFeedback;
     EditText mComments;
@@ -42,7 +41,6 @@ public class UserReviewView implements HLView {
     public void init(LayoutInflater layoutInflater, ViewGroup viewGroup) {
         mView = layoutInflater.inflate(R.layout.user_review_view_layout, viewGroup, false);
         mRatingBar = (RatingBar) mView.findViewById(R.id.ratingBar);
-        mRating = String.valueOf(mRatingBar.getRating());
         mRateText = (TextView) mView.findViewById(R.id.rate);
         mComments = (EditText) mView.findViewById(R.id.comment_input);
 
@@ -52,7 +50,7 @@ public class UserReviewView implements HLView {
                 toggleSubmit(false);
                 final Bundle data = new Bundle();
 //                data.putString(USER_REVIEW, getUserReview());
-                data.putString(USER_REVIEW, mRating);
+                data.putString(USER_REVIEW, String.valueOf(mRatingBar.getRating()));
                 data.putString(USER_COMMENT, ((TextView)mView.findViewById(R.id.comment_input)).getText().toString());
                 final HLCoreEvent event = new HLCoreEvent(SUBMIT_CLICK_EVENT, data);
                 HLEventDispatcher.acquire().dispatchEvent(event);
@@ -65,32 +63,35 @@ public class UserReviewView implements HLView {
                         .putContentName(((TextView)mView.findViewById(R.id.event_name)).getText().toString())
                         .putContentType("Review Rating")
                         .putContentId("Review"));
-//                Answers.getInstance().logCustom(new CustomEvent(Constants.REVIEW).putCustomAttribute(Constants.EMAILID, LoginPresenter.mGoogleAccount.getEmail()));
             }
         });
 
         mSendFeedback = (CheckedTextView) mView.findViewById(R.id.enable_comments);
     }
 
+    /**
+     * Function to change the color of stars wrt to rating
+     * @param rating rating that user gave
+     */
+
     public void setStarColor(Float rating){
         Drawable drawable = mRatingBar.getProgressDrawable();
         if (rating <= 1.0){
             drawable.setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_ATOP);
-            mRateText.setText("Hated it");
+            mRateText.setText(mRatingBar.getContext().getString(R.string.hated_it));
         }else if (rating <= 2.0){
             drawable.setColorFilter(Color.parseColor("#FF8000"), PorterDuff.Mode.SRC_ATOP);
-            mRateText.setText("Disliked it");
+            mRateText.setText(mView.getContext().getString(R.string.disliked_it));
         }else if (rating <= 3.0){
             drawable.setColorFilter(Color.parseColor("#FFBF00"), PorterDuff.Mode.SRC_ATOP);
-            mRateText.setText("It's OK");
+            mRateText.setText(mRatingBar.getContext().getString(R.string.it_is_ok));
         }else if (rating <= 4.0){
             drawable.setColorFilter(Color.parseColor("#BFFF00"), PorterDuff.Mode.SRC_ATOP);
-            mRateText.setText("Liked it");
+            mRateText.setText(mRatingBar.getContext().getString(R.string.liked_it));
         }else if (rating <= 5.0){
             drawable.setColorFilter(Color.parseColor("#00FF00"), PorterDuff.Mode.SRC_ATOP);
-            mRateText.setText("Loved it");
+            mRateText.setText(mRatingBar.getContext().getString(R.string.loved_it));
         }
-
     }
 
 
