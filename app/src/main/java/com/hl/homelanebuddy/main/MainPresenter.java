@@ -33,7 +33,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
         NavigationView.OnNavigationItemSelectedListener{
 
 
-    private GoogleApiClient mGoogleApiClient;
+//    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onBindView() {
@@ -42,27 +42,27 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
         setSupportActionBar(mView.mToolbar);
         mView.mToolbar.setTitle("Mobile Phoenix");
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mView.mDrawerLayout, mView.mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mView.mDrawerLayout.setDrawerListener(toggle);
-        toggle.syncState();
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, mView.mDrawerLayout, mView.mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        mView.mDrawerLayout.setDrawerListener(toggle);
+//        toggle.syncState();
 
-        setLeftNavigationView();
+//        setLeftNavigationView();
 
-        final GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-                    }
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
+//        final GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestEmail()
+//                .build();
+//
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+//                    @Override
+//                    public void onConnectionFailed(ConnectionResult connectionResult) {
+//
+//                    }
+//                })
+//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+//                .build();
+//
 
         HLFragmentUtils.HLFragmentTransaction transaction =
                 new HLFragmentUtils.HLFragmentTransaction();
@@ -105,16 +105,16 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
     @Override
     public void onStart() {
         super.onStart();
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        if (opr.isDone()) {
-            GoogleSignInResult result = opr.get();
-        } else {
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(GoogleSignInResult googleSignInResult) {
-                }
-            });
-        }
+//        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+//        if (opr.isDone()) {
+//            GoogleSignInResult result = opr.get();
+//        } else {
+//            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+//                @Override
+//                public void onResult(GoogleSignInResult googleSignInResult) {
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -126,6 +126,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
     /**
      * Function to initialize the left sliding navigation view
      */
+/*
     private void setLeftNavigationView() {
         mView.mLeftNavigationView.setNavigationItemSelectedListener(this);
 
@@ -140,6 +141,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
         if (LoginPresenter.mGoogleAccount.getPhotoUrl() != null)
             imageView.loadImageURL(LoginPresenter.mGoogleAccount.getPhotoUrl().toString());
     }
+*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -164,15 +166,15 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
      * Function to signout from the google login
      */
     public void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        Intent intent = new Intent(MainPresenter.this, LoginPresenter.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
+//        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+//                new ResultCallback<Status>() {
+//                    @Override
+//                    public void onResult(Status status) {
+//                        Intent intent = new Intent(MainPresenter.this, LoginPresenter.class);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                });
     }
 
 

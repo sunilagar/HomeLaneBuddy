@@ -26,6 +26,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -73,8 +74,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         public TextView mTaskName;
         public TextView mTaskDate;
-        public View mTaskStatus;
+        public CheckBox mTaskStatus;
         public ImageView mChat;
+        public View mStatusColor;
+
         /**
          * @param itemView
          */
@@ -82,8 +85,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             super(itemView);
             mTaskName = (TextView)itemView.findViewById(R.id.task_name);
             mTaskDate = (TextView)itemView.findViewById(R.id.task_date);
-            mTaskStatus    = (View)itemView.findViewById(R.id.task_status);
+            mTaskStatus    = (CheckBox)itemView.findViewById(R.id.task_status);
             mChat = (ImageView) itemView.findViewById(R.id.chat_view);
+            mStatusColor = (View)itemView.findViewById(R.id.status_color);
         }
     }
 
@@ -159,11 +163,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             if (System.currentTimeMillis() >= Long.parseLong(task.getString(Constants.Task.TASK_DATE))) {
                 holder.mChat.setEnabled(true);
                 holder.mChat.setImageResource(R.drawable.ic_chat_black_18dp);
-                holder.mTaskStatus.setBackgroundResource(R.drawable.circle_history_green);
+                holder.mTaskStatus.setEnabled(true);
+                holder.mStatusColor.setBackgroundColor(holder.mTaskStatus.getContext().getResources().
+                        getColor(R.color.green));
             } else {
                 holder.mChat.setEnabled(false);
                 holder.mChat.setImageResource(R.drawable.ic_chat_grey_400_18dp);
-                holder.mTaskStatus.setBackgroundResource(R.drawable.circle_history_red);
+                holder.mTaskStatus.setEnabled(false);
+                holder.mStatusColor.setBackgroundColor(holder.mTaskStatus.getContext().getResources().
+                        getColor(R.color.red));
             }
             holder.mChat.setOnClickListener(new View.OnClickListener() {
                 @Override

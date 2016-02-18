@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckedTextView;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -33,6 +35,8 @@ public class UserReviewView implements HLView {
     RatingBar mRatingBar;
     String mRating ;
     TextView mRateText;
+    CheckedTextView mSendFeedback;
+    EditText mComments;
 
     @Override
     public void init(LayoutInflater layoutInflater, ViewGroup viewGroup) {
@@ -40,6 +44,8 @@ public class UserReviewView implements HLView {
         mRatingBar = (RatingBar) mView.findViewById(R.id.ratingBar);
         mRating = String.valueOf(mRatingBar.getRating());
         mRateText = (TextView) mView.findViewById(R.id.rate);
+        mComments = (EditText) mView.findViewById(R.id.comment_input);
+
         mView.findViewById(R.id.post_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +68,8 @@ public class UserReviewView implements HLView {
 //                Answers.getInstance().logCustom(new CustomEvent(Constants.REVIEW).putCustomAttribute(Constants.EMAILID, LoginPresenter.mGoogleAccount.getEmail()));
             }
         });
+
+        mSendFeedback = (CheckedTextView) mView.findViewById(R.id.enable_comments);
     }
 
     public void setStarColor(Float rating){

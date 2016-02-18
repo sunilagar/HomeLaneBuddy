@@ -1,27 +1,27 @@
-package com.hl.homelanebuddy.main;
+package com.hl.homelanebuddy.login;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.google.android.gms.common.SignInButton;
 import com.hl.hlcorelib.mvp.HLView;
 import com.hl.homelanebuddy.R;
 
 /**
  * Created by hl0395 on 15/12/15.
  */
-public class MainView implements HLView {
+public class LoginView1 implements HLView {
 
-    public View mView;
-    public Toolbar mToolbar;
-    public DrawerLayout mDrawerLayout;
-//    public NavigationView mLeftNavigationView;
+    private View mView;
+    public AutoCompleteTextView mAutoCompleteText;
+    public Button mLoginBtn;
 
     /**
      * Return the enclosing view
@@ -73,10 +73,9 @@ public class MainView implements HLView {
      */
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
-        mView = inflater.inflate(R.layout.activity_main, parent, false);
-        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        mDrawerLayout = (DrawerLayout) mView.findViewById(R.id.drawer_layout);
-//        mLeftNavigationView = (NavigationView) mView.findViewById(R.id.nav_view);
+        mView = inflater.inflate(R.layout.activity_login1, parent, false);
+        mAutoCompleteText = (AutoCompleteTextView) mView.findViewById(R.id.auto_complete_text);
+        mLoginBtn = (Button) mView.findViewById(R.id.login_button);
     }
 
 }
