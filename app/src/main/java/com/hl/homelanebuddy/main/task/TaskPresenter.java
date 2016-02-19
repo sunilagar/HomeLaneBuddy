@@ -1,6 +1,7 @@
 package com.hl.homelanebuddy.main.task;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,7 +14,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
-import com.crashlytics.android.answers.CustomEvent;
 
 import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
@@ -40,7 +40,7 @@ import java.util.Date;
 /**
  * Created by hl0395 on 3/2/16.
  */
-public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventListener {
+public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventListener, SwipeRefreshLayout.OnRefreshListener {
 
     TaskListAdapter mTaskAdapter;
     ArrayList<HLObject> taskArray = new ArrayList<>();
@@ -60,10 +60,20 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         if (!hasEventListener(Constants.USER_REVIEW_EVENT, this)) {
             addEventListener(Constants.USER_REVIEW_EVENT, this);
         }
-        if (!hasEventListener("Refresh", this)) {
-            addEventListener("Refresh", this);
-        }
         nextAlaram = 0;
+
+        mView.mSwipeRefreshLayout.setOnRefreshListener(this);
+
+        mView.mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
+        mView.mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+             /*   mView.mTaskList.setVisibility(View.VISIBLE);
+                mView.mErrorText.setVisibility(View.GONE);*/
+                mView.mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+
         setHLTeamSpinner();
     }
 
@@ -78,15 +88,18 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mView.mMyHLTeamSpinner.setAdapter(arrayAdapter);
+
     }
 
     /**
      * Function to show the snack bar
      */
-    private void showSnackBar(){
+    private void showSnackBar() {
+
         final Snackbar snackbar = Snackbar.make(mView.mRelativeLayout,
                 getResources().getString(R.string.internet_connection), Snackbar.LENGTH_LONG);
-        showErrorText(getResources().getString(R.string.internet_connection));
+//        showErrorText(getResources().getString(R.string.internet_connection));
+
         snackbar.setAction("RETRY", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,11 +111,16 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
     /**
      * Function to show error text
+     *
      * @param text error text
      */
     private void showErrorText(String text) {
-        if (mView.mTaskList!=null)
+        if (mView.mTaskList != null)
             mView.mTaskList.setVisibility(View.GONE);
+       /* mView.mErrorText.setVisibility(View.VISIBLE);
+        mView.mErrorText.setText(text);*/
+
+        mView.mScrollView.setVisibility(View.VISIBLE);
         mView.mErrorText.setVisibility(View.VISIBLE);
         mView.mErrorText.setText(text);
     }
@@ -113,24 +131,24 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         checkInternetParseData();
     }
 
-    /**Function to check the internet if yes parse the data
+    /**
+     * Function to check the internet if yes parse the data
      * else shows Snack bar
-     *
      */
-    private void checkInternetParseData(){
+    private void checkInternetParseData() {
         if (HLNetworkUtils.isNetworkAvailable(getActivity()))
             parseData();
-        else
+        else {
+            mView.mSwipeRefreshLayout.setRefreshing(false);
             showSnackBar();
+        }
     }
 
     RequestQueue volleyReqQueue;
 
 
-
     private void parseData() {
-
-        mView.mProgressView.showProgress();
+        mView.showProgress();
         final long currentTime = System.currentTimeMillis();
         volleyReqQueue = Volley.newRequestQueue(getActivity());
         String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details)+ HLPreferenceUtils.obtain().getString("USER");
@@ -141,6 +159,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                     public void onResponse(final String jsonString) {
 
                         try{
+
 
                             taskArray.clear();
                             JSONObject tasks = new JSONObject(jsonString);
@@ -180,33 +199,46 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
                                 }
                             }
-                            if (taskArray.size()>0){
+                            if (taskArray.size() > 0) {
                                 mTaskAdapter = new TaskListAdapter(taskArray);
                                 mView.mTaskList.setVisibility(View.VISIBLE);
+                                mView.mScrollView.setVisibility(View.GONE);
                                 mView.mErrorText.setVisibility(View.GONE);
                                 mView.mTaskList.setAdapter(mTaskAdapter);
                                 mTaskAdapter.notifyDataSetChanged();
                                 setAlarm();
-                            }else{
+                            } else {
                                 showErrorText(getResources().getString(R.string.no_tasks));
                             }
 
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    mView.mProgressView.hideProgress();
-                }
 
+
+                        mView.hideProgress();
+                        mView.mSwipeRefreshLayout.setRefreshing(false);
+
+                    }
 
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                mView.hideProgress();
+                mView.mSwipeRefreshLayout.setRefreshing(false);
                 if (isVisible())
                     showErrorText(getResources().getString(R.string.volley_error));
             }
         });
 
         volleyReqQueue.add(stringRequest);
+
+    }
+
+    public void hideErrorText() {
+        mView.mTaskList.setVisibility(View.VISIBLE);
+        mView.mErrorText.setVisibility(View.GONE);
 
     }
 
@@ -218,13 +250,13 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                 .putContentType("View Navigation")
                 .putContentId("TaskView")
                 .putCustomAttribute(Constants.CLASS_NAME, TaskPresenter.class.getName()));
-        if(mTaskAdapter != null)
+        if (mTaskAdapter != null)
             mTaskAdapter.notifyDataSetChanged();
     }
 
-    private void setAlarm(){
-        if(nextAlaram != 0) {
-            if((System.currentTimeMillis() + Constants.MINS_10_MILLSECOND) <= nextAlaram ) {
+    private void setAlarm() {
+        if (nextAlaram != 0) {
+            if ((System.currentTimeMillis() + Constants.MINS_10_MILLSECOND) <= nextAlaram) {
 
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.Task.TASK_DATE, nextAlaram + "");
@@ -250,8 +282,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             transaction.mParameters = bundle;
             transaction.mFragmentClass = UserReviewPresenter.class;
             push(transaction);
-        } else if (e.getType().equals("Refresh"))
-            checkInternetParseData();
+        }
 
     }
 
@@ -260,7 +291,6 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         super.onDestroyHLView();
 
         removeEventListener(Constants.USER_REVIEW_EVENT, this);
-        removeEventListener("Refresh", this);
     }
 
     @Override
@@ -271,5 +301,10 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
     @Override
     protected int[] getDisabledMenuItems() {
         return new int[0];
+    }
+
+    @Override
+    public void onRefresh() {
+        checkInternetParseData();
     }
 }

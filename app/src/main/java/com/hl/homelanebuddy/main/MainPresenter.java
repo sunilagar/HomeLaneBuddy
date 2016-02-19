@@ -151,14 +151,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
             signOut();
             return false;
         }
-        if (id == R.id.action_refresh) {
-
-            HLCoreEvent event = new HLCoreEvent("Refresh",null);
-            HLEventDispatcher.acquire().dispatchEvent(event);
-
-            return false;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
