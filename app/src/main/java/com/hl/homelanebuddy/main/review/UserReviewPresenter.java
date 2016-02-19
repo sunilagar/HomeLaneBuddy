@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
@@ -42,7 +46,75 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
         mView.setTaskName(getArguments().getString(Constants.Task.TASK_NAME));
         mView.mRatingBar.setOnRatingBarChangeListener(this);
         mContext = getActivity();
+
+        mView.mSendFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mView.mSendFeedback.isChecked()) {
+                    mView.mSendFeedback.setChecked(false);
+//                    mView.mComments.setVisibility(View.GONE);
+                    collapse(mView.mComments);
+                }
+                else {
+                    mView.mSendFeedback.setChecked(true);
+//                    mView.mComments.setVisibility(View.VISIBLE);
+                    expand(mView.mComments);
+                }
+            }
+        });
     }
+
+    public static void expand(final View v) {
+        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        final int targtetHeight = v.getMeasuredHeight();
+
+        v.getLayoutParams().height = 0;
+        v.setVisibility(View.VISIBLE);
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? LinearLayout.LayoutParams.WRAP_CONTENT
+                        : (int)(targtetHeight * interpolatedTime);
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        a.setDuration(750);
+        v.startAnimation(a);
+    }
+
+    public static void collapse(final View v) {
+        final int initialHeight = v.getMeasuredHeight();
+
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(interpolatedTime == 1){
+                    v.setVisibility(View.GONE);
+                }else{
+                    v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+                    v.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        a.setDuration(750);
+        v.startAnimation(a);
+    }
+
 
     private Context mContext;
 

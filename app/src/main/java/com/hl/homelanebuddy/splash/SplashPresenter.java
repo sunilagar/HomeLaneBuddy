@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
 import com.hl.homelanebuddy.R;
 import com.hl.homelanebuddy.login.LoginPresenter;
+import com.hl.homelanebuddy.login.LoginPresenter1;
 
 public class SplashPresenter extends HLCoreActivityPresenter<SplashView> {
 
@@ -26,7 +27,7 @@ public class SplashPresenter extends HLCoreActivityPresenter<SplashView> {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(SplashPresenter.this, LoginPresenter.class);
+                Intent intent = new Intent(SplashPresenter.this, LoginPresenter1.class);
                 startActivity(intent);
                 finish();
             }

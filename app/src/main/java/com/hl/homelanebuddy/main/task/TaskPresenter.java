@@ -3,6 +3,7 @@ package com.hl.homelanebuddy.main.task;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,10 +23,10 @@ import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
 import com.hl.hlcorelib.utils.HLFragmentUtils;
 import com.hl.hlcorelib.utils.HLNetworkUtils;
+import com.hl.hlcorelib.utils.HLPreferenceUtils;
 import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 import com.hl.homelanebuddy.alarm.AlarmManagerReceiver;
-import com.hl.homelanebuddy.login.LoginPresenter;
 import com.hl.homelanebuddy.main.review.UserReviewPresenter;
 
 import org.json.JSONArray;
@@ -63,6 +64,20 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             addEventListener("Refresh", this);
         }
         nextAlaram = 0;
+        setHLTeamSpinner();
+    }
+
+    private void setHLTeamSpinner() {
+        ArrayList<String> mTeams = new ArrayList<>();
+        mTeams.add("HL Design Team");
+        mTeams.add("HL CSR Team");
+        mTeams.add("HL Helpline - Toll free");
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
+                R.layout.simple_spinner_item, mTeams);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mView.mMyHLTeamSpinner.setAdapter(arrayAdapter);
     }
 
     /**
@@ -118,47 +133,47 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         mView.mProgressView.showProgress();
         final long currentTime = System.currentTimeMillis();
         volleyReqQueue = Volley.newRequestQueue(getActivity());
-        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details)+ LoginPresenter.mGoogleAccount.getEmail();
+        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details)+ HLPreferenceUtils.obtain().getString("USER");
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(final String jsonString) {
 
-                                    try{
+                        try{
 
-                                    taskArray.clear();
-                                    JSONObject tasks = new JSONObject(jsonString);
+                            taskArray.clear();
+                            JSONObject tasks = new JSONObject(jsonString);
 
-                                    JSONArray taskList = tasks.getJSONArray("Details");
+                            JSONArray taskList = tasks.getJSONArray("Details");
 
-                                    for (int i = 0; i < taskList.length(); i++) {
-                                        JSONObject task = taskList.getJSONObject(i);
-                                        HLObject taskObj = new HLObject(Constants.Task.NAME);
-                                        taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
+                            for (int i = 0; i < taskList.length(); i++) {
+                                JSONObject task = taskList.getJSONObject(i);
+                                HLObject taskObj = new HLObject(Constants.Task.NAME);
+                                taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
 
-                                        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                                        if (task.getString(Constants.Task.TASK_DATE).length() > 15) {
-                                            Date date = (Date) formatter.parse(task.getString(Constants.Task.TASK_DATE));
+                                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                if (task.getString(Constants.Task.TASK_DATE).length() > 15) {
+                                    Date date = (Date) formatter.parse(task.getString(Constants.Task.TASK_DATE));
 
-                                            taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
-                                            taskObj.put(Constants.Task.TASK_ASSIGNED_TO, task.getString(Constants.Task.TASK_ASSIGNED_TO));
-                                            taskObj.put(Constants.Task.TASK_TYPE, task.getString(Constants.Task.TASK_TYPE));
-                                            taskObj.save();
-                                            taskArray.add(taskObj);
+                                    taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
+                                    taskObj.put(Constants.Task.TASK_ASSIGNED_TO, task.getString(Constants.Task.TASK_ASSIGNED_TO));
+                                    taskObj.put(Constants.Task.TASK_TYPE, task.getString(Constants.Task.TASK_TYPE));
+                                    taskObj.save();
+                                    taskArray.add(taskObj);
 
-                                            if (date.getTime() > currentTime) {
-                                                if (nextAlaram == 0) {
-                                                    nextAlaram = date.getTime();
-                                                    nextTask = task.getString(Constants.Task.TASK_NAME);
-                                                } else {
-                                                    if (nextAlaram < date.getTime() &&
-                                                            (nextAlaram - Constants.MINS_10_MILLSECOND) < currentTime) {
+                                    if (date.getTime() > currentTime) {
+                                        if (nextAlaram == 0) {
+                                            nextAlaram = date.getTime();
+                                            nextTask = task.getString(Constants.Task.TASK_NAME);
+                                        } else {
+                                            if (nextAlaram < date.getTime() &&
+                                                    (nextAlaram - Constants.MINS_10_MILLSECOND) < currentTime) {
 
-                                                        nextAlaram = date.getTime();
-                                                        nextTask = task.getString(Constants.Task.TASK_NAME);
-                                                    }
-                                                }
+                                                nextAlaram = date.getTime();
+                                                nextTask = task.getString(Constants.Task.TASK_NAME);
+                                            }
+                                        }
 
 
                                     }
@@ -179,8 +194,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        mView.mProgressView.hideProgress();
-                    }
+                    mView.mProgressView.hideProgress();
+                }
 
 
                 }, new Response.ErrorListener() {
