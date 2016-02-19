@@ -27,22 +27,8 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:background="@android:color/white"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/task_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/call_button"
-            android:layout_gravity="center"
-            android:scrollbars="vertical" />
-
-        <com.hl.homelanebuddy.views.HLProgressView
-            android:id="@+id/progress_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center" />
 
         <Button
             android:id="@+id/call_button"
@@ -53,18 +39,37 @@
             android:drawableLeft="@drawable/ic_call_black_24dp"
             android:text="@string/call_homelane" />
 
-        <TextView
-            android:id="@+id/error_display"
+        <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/rounded_rect_gray"
-            android:gravity="center"
-            android:padding="30dp"
-            android:textColor="@color/black"
-            android:visibility="gone" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <View
+                    android:id="@+id/ds"
+                    android:layout_width="match_parent"
+                    android:layout_height="235dp"/>
+                <TextView
+                    android:id="@+id/error_display"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ds"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/rounded_rect_gray"
+                    android:gravity="center"
+                    android:padding="30dp"
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+            </RelativeLayout>
+        </ScrollView>
+
 
     </RelativeLayout>
 

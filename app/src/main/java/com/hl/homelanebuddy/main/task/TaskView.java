@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.hl.hlcorelib.HLProgressInterface;
@@ -26,6 +27,8 @@ public class TaskView implements HLView, HLProgressInterface {
 
     private View mView;
     RecyclerView mTaskList;
+
+    ScrollView mScrollView;
 
     HLProgressView mProgressView;
     RelativeLayout mRelativeLayout;
@@ -88,6 +91,7 @@ public class TaskView implements HLView, HLProgressInterface {
         mTaskList = (RecyclerView) mView.findViewById(R.id.task_list);
         mProgressView = (HLProgressView) mView.findViewById(R.id.progress_view);
 
+        mScrollView = (ScrollView)mView.findViewById(R.id.scroll_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.swipe);
 
         mErrorText = (TextView) mView.findViewById(R.id.error_display);

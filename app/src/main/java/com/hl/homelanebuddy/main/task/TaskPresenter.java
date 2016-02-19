@@ -62,16 +62,23 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         if (!hasEventListener("Refresh", this)) {
             addEventListener("Refresh", this);
         }
-        mView.mSwipeRefreshLayout.setColorSchemeColors(R.color.light_blue);
         nextAlaram = 0;
-        mTaskAdapter = new TaskListAdapter(null);
+       /* mTaskAdapter = new TaskListAdapter(null);
         mView.mTaskList.setAdapter(mTaskAdapter);
-        mTaskAdapter.notifyDataSetChanged();
+        mTaskAdapter.notifyDataSetChanged();*/
+//        hideErrorText();
+
+
+//        mView.mSwipeRefreshLayout.setColorSchemeColors(0,0,0,0);
+
         mView.mSwipeRefreshLayout.setOnRefreshListener(this);
 
+        mView.mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
         mView.mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
+             /*   mView.mTaskList.setVisibility(View.VISIBLE);
+                mView.mErrorText.setVisibility(View.GONE);*/
                 mView.mSwipeRefreshLayout.setRefreshing(true);
             }
         });
@@ -80,10 +87,12 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
     /**
      * Function to show the snack bar
      */
-    private void showSnackBar(){
+    private void showSnackBar() {
+
         final Snackbar snackbar = Snackbar.make(mView.mRelativeLayout,
                 getResources().getString(R.string.internet_connection), Snackbar.LENGTH_LONG);
-        showErrorText(getResources().getString(R.string.internet_connection));
+//        showErrorText(getResources().getString(R.string.internet_connection));
+
         snackbar.setAction("RETRY", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,11 +104,16 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
     /**
      * Function to show error text
+     *
      * @param text error text
      */
     private void showErrorText(String text) {
-        if (mView.mTaskList!=null)
+        if (mView.mTaskList != null)
             mView.mTaskList.setVisibility(View.GONE);
+       /* mView.mErrorText.setVisibility(View.VISIBLE);
+        mView.mErrorText.setText(text);*/
+
+        mView.mScrollView.setVisibility(View.VISIBLE);
         mView.mErrorText.setVisibility(View.VISIBLE);
         mView.mErrorText.setText(text);
     }
@@ -110,87 +124,91 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         checkInternetParseData();
     }
 
-    /**Function to check the internet if yes parse the data
+    /**
+     * Function to check the internet if yes parse the data
      * else shows Snack bar
-     *
      */
-    private void checkInternetParseData(){
+    private void checkInternetParseData() {
         if (HLNetworkUtils.isNetworkAvailable(getActivity()))
             parseData();
-        else
+        else {
+            mView.mSwipeRefreshLayout.setRefreshing(false);
             showSnackBar();
+        }
     }
 
     RequestQueue volleyReqQueue;
 
 
-
     private void parseData() {
-        mView.mProgressView.showProgress();
+        mView.showProgress();
         final long currentTime = System.currentTimeMillis();
         volleyReqQueue = Volley.newRequestQueue(getActivity());
-        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details)+ LoginPresenter.mGoogleAccount.getEmail();
+        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details) + LoginPresenter.mGoogleAccount.getEmail();
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(final String jsonString) {
 
-                                    try{
+                        try {
+                            mView.mSwipeRefreshLayout.setRefreshing(true);
 
-                                    taskArray.clear();
-                                    JSONObject tasks = new JSONObject(jsonString);
+                            taskArray.clear();
+                            JSONObject tasks = new JSONObject(jsonString);
 
-                                    JSONArray taskList = tasks.getJSONArray("Details");
+                            JSONArray taskList = tasks.getJSONArray("Details");
 
-                                    for (int i = 0; i < taskList.length(); i++) {
-                                        JSONObject task = taskList.getJSONObject(i);
-                                        HLObject taskObj = new HLObject(Constants.Task.NAME);
-                                        taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
+                            for (int i = 0; i < taskList.length(); i++) {
+                                JSONObject task = taskList.getJSONObject(i);
+                                HLObject taskObj = new HLObject(Constants.Task.NAME);
+                                taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
 
-                                        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                                        if (task.getString(Constants.Task.TASK_DATE).length() > 15) {
-                                            Date date = (Date) formatter.parse(task.getString(Constants.Task.TASK_DATE));
+                                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                if (task.getString(Constants.Task.TASK_DATE).length() > 15) {
+                                    Date date = (Date) formatter.parse(task.getString(Constants.Task.TASK_DATE));
 
-                                            taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
-                                            taskObj.put(Constants.Task.TASK_ASSIGNED_TO, task.getString(Constants.Task.TASK_ASSIGNED_TO));
-                                            taskObj.put(Constants.Task.TASK_TYPE, task.getString(Constants.Task.TASK_TYPE));
-                                            taskObj.save();
-                                            taskArray.add(taskObj);
+                                    taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
+                                    taskObj.put(Constants.Task.TASK_ASSIGNED_TO, task.getString(Constants.Task.TASK_ASSIGNED_TO));
+                                    taskObj.put(Constants.Task.TASK_TYPE, task.getString(Constants.Task.TASK_TYPE));
+                                    taskObj.save();
+                                    taskArray.add(taskObj);
 
-                                            if (date.getTime() > currentTime) {
-                                                if (nextAlaram == 0) {
-                                                    nextAlaram = date.getTime();
-                                                    nextTask = task.getString(Constants.Task.TASK_NAME);
-                                                } else {
-                                                    if (nextAlaram < date.getTime() &&
-                                                            (nextAlaram - Constants.MINS_10_MILLSECOND) < currentTime) {
+                                    if (date.getTime() > currentTime) {
+                                        if (nextAlaram == 0) {
+                                            nextAlaram = date.getTime();
+                                            nextTask = task.getString(Constants.Task.TASK_NAME);
+                                        } else {
+                                            if (nextAlaram < date.getTime() &&
+                                                    (nextAlaram - Constants.MINS_10_MILLSECOND) < currentTime) {
 
-                                                        nextAlaram = date.getTime();
-                                                        nextTask = task.getString(Constants.Task.TASK_NAME);
-                                                    }
-                                                }
+                                                nextAlaram = date.getTime();
+                                                nextTask = task.getString(Constants.Task.TASK_NAME);
+                                            }
+                                        }
 
 
                                     }
 
                                 }
                             }
-                            if (taskArray.size()>0){
+                            if (taskArray.size() > 0) {
                                 mTaskAdapter = new TaskListAdapter(taskArray);
                                 mView.mTaskList.setVisibility(View.VISIBLE);
+                                mView.mScrollView.setVisibility(View.GONE);
                                 mView.mErrorText.setVisibility(View.GONE);
                                 mView.mTaskList.setAdapter(mTaskAdapter);
                                 mTaskAdapter.notifyDataSetChanged();
                                 setAlarm();
-                            }else{
+                            } else {
                                 showErrorText(getResources().getString(R.string.no_tasks));
                             }
 
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        mView.mProgressView.hideProgress();
+
+                        mView.hideProgress();
                         mView.mSwipeRefreshLayout.setRefreshing(false);
 
                     }
@@ -200,7 +218,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                mView.mProgressView.hideProgress();
+                mView.hideProgress();
                 mView.mSwipeRefreshLayout.setRefreshing(false);
                 if (isVisible())
                     showErrorText(getResources().getString(R.string.volley_error));
@@ -208,6 +226,12 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         });
 
         volleyReqQueue.add(stringRequest);
+
+    }
+
+    public void hideErrorText() {
+        mView.mTaskList.setVisibility(View.VISIBLE);
+        mView.mErrorText.setVisibility(View.GONE);
 
     }
 
@@ -219,13 +243,13 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                 .putContentType("View Navigation")
                 .putContentId("TaskView")
                 .putCustomAttribute(Constants.CLASS_NAME, TaskPresenter.class.getName()));
-        if(mTaskAdapter != null)
+        if (mTaskAdapter != null)
             mTaskAdapter.notifyDataSetChanged();
     }
 
-    private void setAlarm(){
-        if(nextAlaram != 0) {
-            if((System.currentTimeMillis() + Constants.MINS_10_MILLSECOND) <= nextAlaram ) {
+    private void setAlarm() {
+        if (nextAlaram != 0) {
+            if ((System.currentTimeMillis() + Constants.MINS_10_MILLSECOND) <= nextAlaram) {
 
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.Task.TASK_DATE, nextAlaram + "");
@@ -276,7 +300,6 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
     @Override
     public void onRefresh() {
-        parseData();
-
+        checkInternetParseData();
     }
 }
