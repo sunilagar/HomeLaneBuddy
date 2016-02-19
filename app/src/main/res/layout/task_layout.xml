@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipe"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/relative_layout"
@@ -18,7 +19,6 @@
             android:layout_above="@+id/call_button"
             android:layout_gravity="center"
             android:scrollbars="vertical" />
-
 
         <com.hl.homelanebuddy.views.HLProgressView
             android:id="@+id/progress_view"
@@ -37,7 +37,8 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="10dp"
             android:drawableLeft="@drawable/ic_call_black_24dp"
-            android:text="@string/call_homelane" />
+            android:text="@string/call_homelane"
+            android:visibility="gone" />
 
         <ScrollView
             android:id="@+id/scroll_view"
@@ -51,10 +52,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <View
                     android:id="@+id/ds"
                     android:layout_width="match_parent"
-                    android:layout_height="235dp"/>
+                    android:layout_height="235dp" />
+
                 <TextView
                     android:id="@+id/error_display"
                     android:layout_width="match_parent"
@@ -71,6 +74,49 @@
         </ScrollView>
 
 
-    </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/contact_hl_team"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#CEF6CE"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/call_myteam_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_call_black_24dp"
+                app:backgroundTint="@color/white"
+                app:elevation="6dp"
+                app:fabSize="mini"
+                app:pressedTranslationZ="12dp" />
+
+
+            <Spinner
+                android:id="@+id/hl_team_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/email_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_chat_black_18dp"
+                app:backgroundTint="@color/white"
+                app:elevation="6dp"
+                app:fabSize="mini"
+                app:pressedTranslationZ="12dp" />
+
+        </LinearLayout>
+    </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

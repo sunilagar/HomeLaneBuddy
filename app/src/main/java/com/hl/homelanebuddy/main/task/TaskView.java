@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hl.hlcorelib.HLProgressInterface;
@@ -27,12 +29,12 @@ public class TaskView implements HLView, HLProgressInterface {
 
     private View mView;
     RecyclerView mTaskList;
-
     ScrollView mScrollView;
-
     HLProgressView mProgressView;
     RelativeLayout mRelativeLayout;
     TextView mErrorText;
+    Spinner mMyHLTeamSpinner;
+    FloatingActionButton mCallButton, mEmailButton;
 
     SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -100,15 +102,20 @@ public class TaskView implements HLView, HLProgressInterface {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mTaskList.getContext());
         mTaskList.setLayoutManager(mLayoutManager);
 
-        mView.findViewById(R.id.call_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:18001024663"));
-                mView.getContext().startActivity(intent);
+//        mView.findViewById(R.id.call_button).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(Intent.ACTION_DIAL);
+//                intent.setData(Uri.parse("tel:18001024663"));
+//                mView.getContext().startActivity(intent);
+//
+//            }
+//        });
 
-            }
-        });
+        mMyHLTeamSpinner = (Spinner) mView.findViewById(R.id.hl_team_spinner);
+        mCallButton = (FloatingActionButton) mView.findViewById(R.id.call_myteam_button);
+        mEmailButton = (FloatingActionButton) mView.findViewById(R.id.email_button);
+
     }
 
     @Override

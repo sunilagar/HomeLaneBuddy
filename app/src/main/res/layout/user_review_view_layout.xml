@@ -95,10 +95,21 @@
 
             </RadioGroup>
 
+            <CheckedTextView
+                android:padding="10dp"
+                android:id="@+id/enable_comments"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
+                android:text="Give feedback?"
+                android:layout_height="wrap_content" />
+
             <EditText
                 android:id="@+id/comment_input"
-                android:layout_width="wrap_content"
-                android:hint="Please enter your feedback..."
+                android:background="@color/light_gray"
+                android:layout_width="match_parent"
+                android:hint="Enter your Feedback..."
+                android:visibility="gone"
                 android:lines="5"
                 android:layout_toRightOf="@+id/event_icon"
                 android:layout_height="wrap_content" />
@@ -107,6 +118,7 @@
                 android:id="@+id/post_button"
                 android:textColor="@color/white"
                 android:text="Post"
+                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

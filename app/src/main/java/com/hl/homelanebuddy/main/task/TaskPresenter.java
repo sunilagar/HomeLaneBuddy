@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.design.widget.Snackbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,10 +23,10 @@ import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
 import com.hl.hlcorelib.utils.HLFragmentUtils;
 import com.hl.hlcorelib.utils.HLNetworkUtils;
+import com.hl.hlcorelib.utils.HLPreferenceUtils;
 import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 import com.hl.homelanebuddy.alarm.AlarmManagerReceiver;
-import com.hl.homelanebuddy.login.LoginPresenter;
 import com.hl.homelanebuddy.main.review.UserReviewPresenter;
 
 import org.json.JSONArray;
@@ -59,17 +60,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         if (!hasEventListener(Constants.USER_REVIEW_EVENT, this)) {
             addEventListener(Constants.USER_REVIEW_EVENT, this);
         }
-        if (!hasEventListener("Refresh", this)) {
-            addEventListener("Refresh", this);
-        }
         nextAlaram = 0;
-       /* mTaskAdapter = new TaskListAdapter(null);
-        mView.mTaskList.setAdapter(mTaskAdapter);
-        mTaskAdapter.notifyDataSetChanged();*/
-//        hideErrorText();
-
-
-//        mView.mSwipeRefreshLayout.setColorSchemeColors(0,0,0,0);
 
         mView.mSwipeRefreshLayout.setOnRefreshListener(this);
 
@@ -82,6 +73,22 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                 mView.mSwipeRefreshLayout.setRefreshing(true);
             }
         });
+
+        setHLTeamSpinner();
+    }
+
+    private void setHLTeamSpinner() {
+        ArrayList<String> mTeams = new ArrayList<>();
+        mTeams.add("HL Design Team");
+        mTeams.add("HL CSR Team");
+        mTeams.add("HL Helpline - Toll free");
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
+                R.layout.simple_spinner_item, mTeams);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mView.mMyHLTeamSpinner.setAdapter(arrayAdapter);
+
     }
 
     /**
@@ -144,15 +151,15 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         mView.showProgress();
         final long currentTime = System.currentTimeMillis();
         volleyReqQueue = Volley.newRequestQueue(getActivity());
-        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details) + LoginPresenter.mGoogleAccount.getEmail();
+        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details)+ HLPreferenceUtils.obtain().getString("USER");
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(final String jsonString) {
 
-                        try {
-                            mView.mSwipeRefreshLayout.setRefreshing(true);
+                        try{
+
 
                             taskArray.clear();
                             JSONObject tasks = new JSONObject(jsonString);
@@ -208,11 +215,11 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                             e.printStackTrace();
                         }
 
+
                         mView.hideProgress();
                         mView.mSwipeRefreshLayout.setRefreshing(false);
 
                     }
-
 
                 }, new Response.ErrorListener() {
             @Override
@@ -275,8 +282,7 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             transaction.mParameters = bundle;
             transaction.mFragmentClass = UserReviewPresenter.class;
             push(transaction);
-        } else if (e.getType().equals("Refresh"))
-            checkInternetParseData();
+        }
 
     }
 
@@ -285,7 +291,6 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         super.onDestroyHLView();
 
         removeEventListener(Constants.USER_REVIEW_EVENT, this);
-        removeEventListener("Refresh", this);
     }
 
     @Override
