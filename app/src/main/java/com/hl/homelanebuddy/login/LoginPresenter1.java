@@ -39,6 +39,7 @@ import com.hl.homelanebuddy.R;
 import com.hl.homelanebuddy.main.MainPresenter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class LoginPresenter1 extends HLCoreActivityPresenter<LoginView1> {
 
@@ -59,17 +60,17 @@ public class LoginPresenter1 extends HLCoreActivityPresenter<LoginView1> {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.GET_ACCOUNTS},
                         0);
                 return;
-            }else
+            } else
                 setupAutoComplete();
 
-        }else
+        } else
             setupAutoComplete();
 
         mView.mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(mView.mAutoCompleteText.getText().toString().length() > 0) {
+                if (mView.mAutoCompleteText.getText().toString().length() > 0) {
                     HLPreferenceUtils.obtain().put("USER", mView.mAutoCompleteText.getText().toString());
 
                     Intent intent = new Intent(LoginPresenter1.this, MainPresenter.class);
@@ -100,20 +101,21 @@ public class LoginPresenter1 extends HLCoreActivityPresenter<LoginView1> {
 
     }
 
-    private void setupAutoComplete(){
+    private void setupAutoComplete() {
         AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
         Account[] list = manager.getAccounts();
 
-        ArrayList<String> mAccounts = new ArrayList<>();
+
+        HashSet<String> hashSet = new HashSet<String>();
 
         for (Account account : list) {
-            if(account.name.contains("@"))
-                mAccounts.add(account.name);
+            if (account.name.contains("@"))
+                hashSet.add(account.name);
         }
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(LoginPresenter1.this,
-                android.R.layout.simple_dropdown_item_1line, mAccounts);
+                android.R.layout.simple_dropdown_item_1line, new ArrayList<>(hashSet));
 
 
         mView.mAutoCompleteText.setAdapter(adapter);
@@ -123,12 +125,12 @@ public class LoginPresenter1 extends HLCoreActivityPresenter<LoginView1> {
     /**
      * Function to show the snack bar
      */
-    private void showSnackBar(){
+    private void showSnackBar() {
         final Snackbar snackbar = Snackbar.make(mView.mAutoCompleteText, getResources().getString(R.string.internet_connection), Snackbar.LENGTH_LONG);
         snackbar.setAction("RETRY", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    showSnackBar();
+                showSnackBar();
             }
         }).show();
 
