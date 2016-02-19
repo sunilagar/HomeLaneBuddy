@@ -2,7 +2,7 @@ package com.hl.homelanebuddy.main.review;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,23 +75,30 @@ public class UserReviewView implements HLView {
      */
 
     public void setStarColor(Float rating){
-        Drawable drawable = mRatingBar.getProgressDrawable();
+
+        LayerDrawable stars = (LayerDrawable) mRatingBar.getProgressDrawable();
+//        Drawable drawable = mRatingBar.getProgressDrawable();
+//        drawable.setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_ATOP);
+
+        stars.getDrawable(1).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+//        stars.getDrawable(0).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
         if (rating <= 1.0){
-            drawable.setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_ATOP);
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_ATOP);
             mRateText.setText(mRatingBar.getContext().getString(R.string.hated_it));
         }else if (rating <= 2.0){
-            drawable.setColorFilter(Color.parseColor("#FF8000"), PorterDuff.Mode.SRC_ATOP);
-            mRateText.setText(mView.getContext().getString(R.string.disliked_it));
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#FF8000"), PorterDuff.Mode.SRC_ATOP);
+            mRateText.setText(mRatingBar.getContext().getString(R.string.disliked_it));
         }else if (rating <= 3.0){
-            drawable.setColorFilter(Color.parseColor("#FFBF00"), PorterDuff.Mode.SRC_ATOP);
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#FFBF00"), PorterDuff.Mode.SRC_ATOP);
             mRateText.setText(mRatingBar.getContext().getString(R.string.it_is_ok));
         }else if (rating <= 4.0){
-            drawable.setColorFilter(Color.parseColor("#BFFF00"), PorterDuff.Mode.SRC_ATOP);
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#BFFF00"), PorterDuff.Mode.SRC_ATOP);
             mRateText.setText(mRatingBar.getContext().getString(R.string.liked_it));
         }else if (rating <= 5.0){
-            drawable.setColorFilter(Color.parseColor("#00FF00"), PorterDuff.Mode.SRC_ATOP);
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#00FF00"), PorterDuff.Mode.SRC_ATOP);
             mRateText.setText(mRatingBar.getContext().getString(R.string.loved_it));
         }
+
     }
 
 

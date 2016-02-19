@@ -33,7 +33,7 @@ import java.util.ArrayList;
 /**
  * Created by hl0204 on 3/2/16.
  */
-public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implements HLEventListener,RatingBar.OnRatingBarChangeListener {
+public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implements HLEventListener {
 
     private ServerConnection mServerConnection;
 
@@ -44,7 +44,13 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
             addEventListener(UserReviewView.SUBMIT_CLICK_EVENT, this);
         }
         mView.setTaskName(getArguments().getString(Constants.Task.TASK_NAME));
-        mView.mRatingBar.setOnRatingBarChangeListener(this);
+        mView.mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                mView.setStarColor(rating);
+                ratingBar.setRating(rating);
+            }
+        });
         mContext = getActivity();
 
         mView.mSendFeedback.setOnClickListener(new View.OnClickListener() {
@@ -232,20 +238,20 @@ public class UserReviewPresenter extends HLCoreFragment<UserReviewView> implemen
         removeEventListener(UserReviewView.SUBMIT_CLICK_EVENT,this);
     }
 
-    /**
-     * Notification that the rating has changed. Clients can use the
-     * fromUser parameter to distinguish user-initiated changes from those
-     * that occurred programmatically. This will not be called continuously
-     * while the user is dragging, only when the user finalizes a rating by
-     * lifting the touch.
-     *
-     * @param ratingBar The RatingBar whose rating has changed.
-     * @param rating    The current rating. This will be in the range
-     *                  0..numStars.
-     * @param fromUser  True if the rating change was initiated by a user's
-     */
-    @Override
-    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-        mView.setStarColor(rating);
-    }
+//    /**
+//     * Notification that the rating has changed. Clients can use the
+//     * fromUser parameter to distinguish user-initiated changes from those
+//     * that occurred programmatically. This will not be called continuously
+//     * while the user is dragging, only when the user finalizes a rating by
+//     * lifting the touch.
+//     *
+//     * @param ratingBar The RatingBar whose rating has changed.
+//     * @param rating    The current rating. This will be in the range
+//     *                  0..numStars.
+//     * @param fromUser  True if the rating change was initiated by a user's
+//     */
+//    @Override
+//    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+//        mView.setStarColor(rating);
+//    }
 }

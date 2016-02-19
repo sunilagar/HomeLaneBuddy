@@ -38,16 +38,20 @@
             android:textStyle="bold"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/event_icon"/>
-
         <RatingBar
+            android:id="@+id/ratingBar"
             android:layout_below="@+id/event_name"
             android:layout_toRightOf="@+id/event_icon"
-            android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="44dp" />
+            android:layout_marginTop="10dp"
+            android:isIndicator="false"
+            android:stepSize="1.0"
+            android:rating="1.0"
+            android:numStars="5"
+            android:paddingBottom="5dp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
