@@ -23,14 +23,16 @@ import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
 import com.hl.hlcorelib.utils.HLFragmentUtils;
+import com.hl.hlcorelib.utils.HLPreferenceUtils;
 import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 import com.hl.homelanebuddy.login.LoginPresenter;
+import com.hl.homelanebuddy.login.LoginPresenter1;
 import com.hl.homelanebuddy.main.task.TaskPresenter;
 import com.hl.homelanebuddy.views.CircleImageView;
 
 public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
-        NavigationView.OnNavigationItemSelectedListener{
+        NavigationView.OnNavigationItemSelectedListener {
 
 
 //    private GoogleApiClient mGoogleApiClient;
@@ -63,6 +65,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
 //                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
 //                .build();
 //
+
 
         HLFragmentUtils.HLFragmentTransaction transaction =
                 new HLFragmentUtils.HLFragmentTransaction();
@@ -142,7 +145,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
             imageView.loadImageURL(LoginPresenter.mGoogleAccount.getPhotoUrl().toString());
     }
 */
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -158,6 +160,13 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
      * Function to signout from the google login
      */
     public void signOut() {
+        HLPreferenceUtils.obtain().put("USER", "");
+
+
+        Intent intent = new Intent(MainPresenter.this, LoginPresenter1.class);
+        startActivity(intent);
+        finish();
+
 //        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
 //                new ResultCallback<Status>() {
 //                    @Override

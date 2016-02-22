@@ -2,6 +2,7 @@ package com.hl.homelanebuddy.login;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,6 +75,9 @@ public class LoginView1 implements HLView {
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
         mView = inflater.inflate(R.layout.activity_login1, parent, false);
+//        TextInputLayout inputLayoutName = (TextInputLayout)mView.findViewById(R.id.input_layout_name);
+//        inputLayoutName.setHint("Enter your Email ID");
+//        inputLayoutName.setHintAnimationEnabled(true);
         mAutoCompleteText = (AutoCompleteTextView) mView.findViewById(R.id.auto_complete_text);
         mLoginBtn = (Button) mView.findViewById(R.id.login_button);
     }
