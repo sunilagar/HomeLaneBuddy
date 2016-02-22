@@ -1,8 +1,9 @@
 package com.hl.homelanebuddy.main.task;
 
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
@@ -14,20 +15,18 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
-
 import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
 import com.hl.hlcorelib.mvp.events.HLEventListener;
 import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
-import com.hl.hlcorelib.utils.HLFragmentUtils;
 import com.hl.hlcorelib.utils.HLNetworkUtils;
 import com.hl.hlcorelib.utils.HLPreferenceUtils;
 import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 import com.hl.homelanebuddy.alarm.AlarmManagerReceiver;
-import com.hl.homelanebuddy.main.review.UserReviewPresenter;
+import com.hl.homelanebuddy.main.review.UserReviewDialogPresenter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -276,12 +275,17 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
         if (e.getType().equals(Constants.USER_REVIEW_EVENT)) {
 
-            HLFragmentUtils.HLFragmentTransaction transaction =
-                    new HLFragmentUtils.HLFragmentTransaction();
-            transaction.mFrameId = R.id.fragment_frame;
-            transaction.mParameters = bundle;
-            transaction.mFragmentClass = UserReviewPresenter.class;
-            push(transaction);
+            FragmentManager fm = getChildFragmentManager();
+            UserReviewDialogPresenter mConfirmationDialogPresenter = new UserReviewDialogPresenter();
+            mConfirmationDialogPresenter.setArguments(bundle);
+            mConfirmationDialogPresenter.show(fm, "dialog0");
+
+//            HLFragmentUtils.HLFragmentTransaction transaction =
+//                    new HLFragmentUtils.HLFragmentTransaction();
+//            transaction.mFrameId = R.id.fragment_frame;
+//            transaction.mParameters = bundle;
+//            transaction.mFragmentClass = UserReviewDialogPresenter.class;
+//            push(transaction);
         }
 
     }
