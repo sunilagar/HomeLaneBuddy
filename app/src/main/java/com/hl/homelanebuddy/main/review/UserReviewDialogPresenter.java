@@ -24,10 +24,10 @@ import com.hl.hlcorelib.CoreLogger;
 import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.presenters.HLCoreFragmentDialogPresenter;
 import com.hl.hlcorelib.orm.HLObject;
+import com.hl.hlcorelib.utils.HLPreferenceUtils;
 import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 import com.hl.homelanebuddy.business.ServerConnection;
-import com.hl.homelanebuddy.login.LoginPresenter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -229,7 +229,7 @@ public class UserReviewDialogPresenter extends HLCoreFragmentDialogPresenter<Use
         if(mServerConnection == null){
             mServerConnection = new ServerConnection(mContext);
         }
-        final String email = LoginPresenter.mGoogleAccount.getEmail();//To be filled based on the user
+        final String email = HLPreferenceUtils.obtain().getString("USER");//To be filled based on the user
         final String endPoint = HLCoreLib.readProperty(Constants.APPConfig.review_post)+email;//To be filled when API is ready
         try{
             JSONArray tasks = new JSONArray();
