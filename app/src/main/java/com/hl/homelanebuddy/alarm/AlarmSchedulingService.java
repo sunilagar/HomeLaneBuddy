@@ -87,8 +87,8 @@ public class AlarmSchedulingService extends IntentService implements HLLoaderInt
                         .setPriority(Notification.PRIORITY_HIGH);
 
 
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-        mBuilder.setSound(alarmSound);
+//        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+//        mBuilder.setSound(alarmSound);
         mBuilder.setAutoCancel(true);
         mBuilder.setContentIntent(contentIntent);
         mBuilder.setAutoCancel(true);

@@ -21,4 +21,8 @@
     <color name="red">#f00</color>
     <color name="green">#00FF00</color>
     <color name="yellow">#FFCC33</color>
+    <color name="card_view_gray">#9B9B9B</color>
+    <color name="card_view_green">#009688</color>
+
+
 </resources>

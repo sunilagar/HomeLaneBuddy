@@ -22,21 +22,29 @@
 package com.hl.homelanebuddy.main.task;
 
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.hlcorelib.orm.HLObject;
 import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 
+import org.w3c.dom.Text;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,9 +82,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         public TextView mTaskName;
         public TextView mTaskDate;
-        public CheckBox mTaskStatus;
-        public ImageView mChat;
+        public TextView mTaskDay;
+        public ImageView mTaskStatus;
+        public TextView mTaskReview;
         public View mStatusColor;
+        public CardView mCardView;
 
         /**
          * @param itemView
@@ -84,10 +94,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         public ViewHolder(View itemView) {
             super(itemView);
             mTaskName = (TextView)itemView.findViewById(R.id.task_name);
-            mTaskDate = (TextView)itemView.findViewById(R.id.task_date);
-            mTaskStatus    = (CheckBox)itemView.findViewById(R.id.task_status);
-            mChat = (ImageView) itemView.findViewById(R.id.chat_view);
+            mTaskDate = (TextView)itemView.findViewById(R.id.date_text);
+            mTaskDay = (TextView)itemView.findViewById(R.id.day_text);
+            mTaskReview = (TextView)itemView.findViewById(R.id.rating_text);
+            mTaskStatus    = (ImageView)itemView.findViewById(R.id.task_status);
+//            mChat = (ImageView) itemView.findViewById(R.id.chat_view);
             mStatusColor = (View)itemView.findViewById(R.id.status_color);
+            mCardView = (CardView)itemView.findViewById(R.id.card_view);
         }
     }
 
@@ -133,7 +146,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     @Override
     public TaskListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.task_list_item, parent, false);
+                .inflate(R.layout.task_list_item1, parent, false);
         return new ViewHolder(v);
     }
 
@@ -158,44 +171,79 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final HLObject task = (HLObject)mDataSet.get(position);
         holder.mTaskName.setText(task.getString(Constants.Task.TASK_NAME));
-        if(task.getString(Constants.Task.TASK_DATE)!=null && task.getString(Constants.Task.TASK_DATE).length()>0) {
-            holder.mTaskDate.setText(convertTime(Long.parseLong(task.getString(Constants.Task.TASK_DATE))));
+        if(task.getString(Constants.Task.TASK_DATE)!=null &&
+                task.getString(Constants.Task.TASK_DATE).length()>0) {
+            holder.mTaskDate.setText(convertTime(Long.parseLong(task.getString(Constants.Task.TASK_DATE)),"dd"));
+            holder.mTaskDay.setText(convertTime(Long.parseLong(task.getString(Constants.Task.TASK_DATE)), "MMM"));
             if (System.currentTimeMillis() >= Long.parseLong(task.getString(Constants.Task.TASK_DATE))) {
-                holder.mChat.setEnabled(true);
-                holder.mChat.setImageResource(R.drawable.ic_chat_black_18dp);
-                holder.mTaskStatus.setEnabled(true);
-                holder.mStatusColor.setBackgroundColor(holder.mTaskStatus.getContext().getResources().
-                        getColor(R.color.green));
+                holder.mTaskReview.setEnabled(true);
+                holder.mCardView.setCardBackgroundColor(holder.mTaskReview.getContext().getResources().
+                        getColor(R.color.card_view_green));
+                holder.mTaskReview.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
+                        bundle.putParcelableArrayList(Constants.Task.NAME, mDataSet);
+
+                        HLCoreEvent event = new HLCoreEvent(Constants.USER_REVIEW_EVENT,
+                                bundle);
+                        HLEventDispatcher.acquire().dispatchEvent(event);
+
+                    }
+                });
+
             } else {
-                holder.mChat.setEnabled(false);
-                holder.mChat.setImageResource(R.drawable.ic_chat_grey_400_18dp);
-                holder.mTaskStatus.setEnabled(false);
-                holder.mStatusColor.setBackgroundColor(holder.mTaskStatus.getContext().getResources().
-                        getColor(R.color.red));
+                holder.mTaskReview.setEnabled(false);
+                holder.mCardView.setCardBackgroundColor(holder.mTaskReview.getContext().getResources().
+                        getColor(R.color.card_view_gray));
             }
-            holder.mChat.setOnClickListener(new View.OnClickListener() {
+
+
+            holder.mTaskStatus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(holder.mTaskStatus.getContext(), v);
 
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
-//                bundle.putString(Constants.Task.TASK_ID, task.getString(Constants.Task.TASK_ID));
-                    bundle.putParcelableArrayList(Constants.Task.NAME, mDataSet);
+                    try {
+                        Field[] fields = popupMenu.getClass().getDeclaredFields();
+                        for (Field field : fields) {
+                            if ("mPopup".equals(field.getName())) {
+                                field.setAccessible(true);
+                                Object menuPopupHelper = field.get(popupMenu);
+                                Class<?> classPopupHelper = Class.forName(menuPopupHelper
+                                        .getClass().getName());
+                                Method setForceIcons = classPopupHelper.getMethod(
+                                        "setForceShowIcon", boolean.class);
+                                setForceIcons.invoke(menuPopupHelper, true);
+                                break;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Crashlytics.getInstance().core.logException(e.getCause());
+                    }
 
-                    HLCoreEvent event = new HLCoreEvent(Constants.USER_REVIEW_EVENT,
-                            bundle);
-                    HLEventDispatcher.acquire().dispatchEvent(event);
-
+                    popupMenu.getMenuInflater().inflate(R.menu.task_status, popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            return false;
+                        }
+                    });
+                    popupMenu.show();
                 }
             });
+
         }
     }
 
 
 
-    public String convertTime(long time){
+    public String convertTime(long time, String f){
         Date date = new Date(time);
-        Format format = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
+        Format format = new SimpleDateFormat(f);
         return format.format(date);
     }
 
