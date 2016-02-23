@@ -6,12 +6,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -27,11 +29,14 @@ public class TaskView implements HLView, HLProgressInterface {
 
     private View mView;
     RecyclerView mTaskList;
+    ScrollView mScrollView;
     HLProgressView mProgressView;
     RelativeLayout mRelativeLayout;
     TextView mErrorText;
     Spinner mMyHLTeamSpinner;
     FloatingActionButton mCallButton, mEmailButton;
+
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
      * Return the enclosing view
@@ -87,7 +92,12 @@ public class TaskView implements HLView, HLProgressInterface {
         mRelativeLayout = (RelativeLayout) mView.findViewById(R.id.relative_layout);
         mTaskList = (RecyclerView) mView.findViewById(R.id.task_list);
         mProgressView = (HLProgressView) mView.findViewById(R.id.progress_view);
+
+        mScrollView = (ScrollView)mView.findViewById(R.id.scroll_view);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.swipe);
+
         mErrorText = (TextView) mView.findViewById(R.id.error_display);
+
         mTaskList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mTaskList.getContext());
         mTaskList.setLayoutManager(mLayoutManager);

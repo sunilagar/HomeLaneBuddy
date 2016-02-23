@@ -2,7 +2,7 @@ package com.hl.homelanebuddy.main.review;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.RatingEvent;
 import com.hl.hlcorelib.mvp.HLView;
-import com.hl.hlcorelib.mvp.events.HLCoreEvent;
-import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.homelanebuddy.R;
 
 /**
@@ -36,6 +32,8 @@ public class UserReviewView implements HLView {
     TextView mRateText;
     CheckedTextView mSendFeedback;
     EditText mComments;
+    TextView mPostButton;
+    TextView mCancelButton;
 
     @Override
     public void init(LayoutInflater layoutInflater, ViewGroup viewGroup) {
@@ -43,31 +41,11 @@ public class UserReviewView implements HLView {
         mRatingBar = (RatingBar) mView.findViewById(R.id.ratingBar);
         mRateText = (TextView) mView.findViewById(R.id.rate);
         mComments = (EditText) mView.findViewById(R.id.comment_input);
-
-        mView.findViewById(R.id.post_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleSubmit(false);
-                final Bundle data = new Bundle();
-//                data.putString(USER_REVIEW, getUserReview());
-                data.putString(USER_REVIEW, String.valueOf(mRatingBar.getRating()));
-                data.putString(USER_COMMENT, ((TextView)mView.findViewById(R.id.comment_input)).getText().toString());
-                final HLCoreEvent event = new HLCoreEvent(SUBMIT_CLICK_EVENT, data);
-                HLEventDispatcher.acquire().dispatchEvent(event);
-
-                /**
-                 * Reviewers Email ID
-                 */
-                Answers.getInstance().logRating(new RatingEvent()
-                        .putRating(new Integer(getUserReview()))
-                        .putContentName(((TextView)mView.findViewById(R.id.event_name)).getText().toString())
-                        .putContentType("Review Rating")
-                        .putContentId("Review"));
-            }
-        });
-
+        mPostButton = (TextView)mView.findViewById(R.id.post_button);
+        mCancelButton = (TextView)mView.findViewById(R.id.cancel_button);
         mSendFeedback = (CheckedTextView) mView.findViewById(R.id.enable_comments);
     }
+
 
     /**
      * Function to change the color of stars wrt to rating
@@ -75,23 +53,30 @@ public class UserReviewView implements HLView {
      */
 
     public void setStarColor(Float rating){
-        Drawable drawable = mRatingBar.getProgressDrawable();
+
+        LayerDrawable stars = (LayerDrawable) mRatingBar.getProgressDrawable();
+//        Drawable drawable = mRatingBar.getProgressDrawable();
+//        drawable.setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_ATOP);
+
+        stars.getDrawable(1).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+//        stars.getDrawable(0).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
         if (rating <= 1.0){
-            drawable.setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_ATOP);
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_ATOP);
             mRateText.setText(mRatingBar.getContext().getString(R.string.hated_it));
         }else if (rating <= 2.0){
-            drawable.setColorFilter(Color.parseColor("#FF8000"), PorterDuff.Mode.SRC_ATOP);
-            mRateText.setText(mView.getContext().getString(R.string.disliked_it));
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#FF8000"), PorterDuff.Mode.SRC_ATOP);
+            mRateText.setText(mRatingBar.getContext().getString(R.string.disliked_it));
         }else if (rating <= 3.0){
-            drawable.setColorFilter(Color.parseColor("#FFBF00"), PorterDuff.Mode.SRC_ATOP);
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#FFBF00"), PorterDuff.Mode.SRC_ATOP);
             mRateText.setText(mRatingBar.getContext().getString(R.string.it_is_ok));
         }else if (rating <= 4.0){
-            drawable.setColorFilter(Color.parseColor("#BFFF00"), PorterDuff.Mode.SRC_ATOP);
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#BFFF00"), PorterDuff.Mode.SRC_ATOP);
             mRateText.setText(mRatingBar.getContext().getString(R.string.liked_it));
         }else if (rating <= 5.0){
-            drawable.setColorFilter(Color.parseColor("#00FF00"), PorterDuff.Mode.SRC_ATOP);
+            stars.getDrawable(2).setColorFilter(Color.parseColor("#00FF00"), PorterDuff.Mode.SRC_ATOP);
             mRateText.setText(mRatingBar.getContext().getString(R.string.loved_it));
         }
+
     }
 
 

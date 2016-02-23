@@ -1,131 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="10dp"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-<android.support.v7.widget.CardView
+    android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.FloatingActionButton
-            android:layout_margin="5dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:id="@+id/event_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fabSize="mini"
-            android:src="@android:drawable/ic_menu_agenda"
-            app:elevation="6dp"
-            app:pressedTranslationZ="12dp"
-            />
-
         <TextView
-            android:layout_margin="5dp"
             android:id="@+id/event_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:paddingTop="5dp"
             android:textAppearance="@android:style/TextAppearance.Medium"
-            android:layout_width="match_parent"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/event_icon"/>
+            android:textStyle="bold" />
 
         <RatingBar
-            android:layout_below="@+id/event_name"
-            android:layout_toRightOf="@+id/event_icon"
             android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/event_name"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="44dp" />
+            android:layout_marginTop="10dp"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:paddingBottom="5dp"
+            android:stepSize="1.0" />
+
         <TextView
+            android:id="@+id/rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/rate"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/ratingBar"/>
+            android:layout_below="@+id/ratingBar"
+            android:layout_centerHorizontal="true" />
 
         <LinearLayout
-            android:layout_below="@+id/rate"
-            android:orientation="vertical"
             android:id="@+id/form_container"
-            android:layout_centerHorizontal="true"
-            android:layout_toRightOf="@+id/event_icon"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rate"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
 
             <RadioGroup
-                android:layout_marginTop="20dp"
                 android:id="@+id/radio_group"
-                android:visibility="gone"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <RadioButton
-                    android:button="@null"
                     android:id="@+id/very_good_button"
-                    android:background="@drawable/review_good_drawable"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/review_good_drawable"
+                    android:button="@null" />
+
                 <RadioButton
-                    android:button="@null"
                     android:id="@+id/good_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/review_ok_drawable"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:button="@null" />
+
                 <RadioButton
-                    android:button="@null"
                     android:id="@+id/bad_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/review_bad_drawable"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:button="@null" />
 
             </RadioGroup>
 
             <CheckedTextView
-                android:padding="10dp"
                 android:id="@+id/enable_comments"
                 android:layout_width="match_parent"
-                android:gravity="center"
+                android:layout_height="wrap_content"
                 android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
-                android:text="Give feedback?"
-                android:layout_height="wrap_content" />
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Give feedback?" />
 
             <EditText
                 android:id="@+id/comment_input"
-                android:background="@color/light_gray"
                 android:layout_width="match_parent"
-                android:hint="Enter your Feedback..."
-                android:visibility="gone"
-                android:lines="5"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_toRightOf="@+id/event_icon"
-                android:layout_height="wrap_content" />
-            <Button
-                android:backgroundTint="@color/colorPrimaryDark"
-                android:id="@+id/post_button"
-                android:textColor="@color/white"
-                android:text="Post"
-                android:layout_marginTop="10dp"
+                android:hint="Enter your Feedback..."
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/form_container"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/cancel_button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="CANCEL" />
+
+            <TextView
+                android:id="@+id/post_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="RATE"
+                android:enabled="false"/>
 
         </LinearLayout>
 
-
     </RelativeLayout>
-
-</android.support.v7.widget.CardView>
-    </ScrollView>
+</ScrollView>
