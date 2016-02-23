@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipe"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white">
-
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/task_list"
@@ -74,49 +73,38 @@
         </ScrollView>
 
 
-        <LinearLayout
-            android:id="@+id/contact_hl_team"
-            android:layout_width="match_parent"
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/multiple_actions"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="#CEF6CE"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            fab:fab_addButtonColorNormal="@color/brick_red"
+            fab:fab_addButtonColorPressed="@color/brick_red"
+            fab:fab_addButtonPlusIconColor="@color/white"
+            fab:fab_labelStyle="@style/menu_labels_style">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/call_myteam_button"
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/action_a"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_email_black_24dp"
+                fab:fab_colorNormal="@color/white"
+                fab:fab_colorPressed="@color/white_pressed" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/action_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/ic_call_black_24dp"
-                app:backgroundTint="@color/white"
-                app:elevation="6dp"
-                app:fabSize="mini"
-                app:pressedTranslationZ="12dp" />
+                fab:fab_colorNormal="@color/white"
+                fab:fab_colorPressed="@color/white_pressed" />
 
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
-            <Spinner
-                android:id="@+id/hl_team_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center" />
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/email_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"
-                android:src="@drawable/ic_chat_black_18dp"
-                app:backgroundTint="@color/white"
-                app:elevation="6dp"
-                app:fabSize="mini"
-                app:pressedTranslationZ="12dp" />
-
-        </LinearLayout>
     </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>
