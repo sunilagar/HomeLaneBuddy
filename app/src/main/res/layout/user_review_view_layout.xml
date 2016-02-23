@@ -19,11 +19,35 @@
             android:textAppearance="@android:style/TextAppearance.Medium"
             android:textStyle="bold" />
 
+        <LinearLayout
+            android:id="@+id/status_layout"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/event_name"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/current_status"
+                android:text="Current Status"
+                android:layout_below="@+id/event_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Spinner
+                android:layout_below="@+id/event_name"
+                android:layout_toRightOf="@+id/current_status"
+                android:id="@+id/status_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></Spinner>
+        </LinearLayout>
+
         <RatingBar
+            android:layout_below="@+id/status_layout"
             android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/event_name"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:isIndicator="false"
@@ -86,7 +110,7 @@
                 android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="Give feedback?" />
+                android:text="Tell us more?" />
 
             <EditText
                 android:id="@+id/comment_input"
@@ -110,7 +134,9 @@
                 android:id="@+id/cancel_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
                 android:layout_margin="10dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="CANCEL" />
 
@@ -119,6 +145,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:padding="10dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="RATE"
                 android:enabled="false"/>

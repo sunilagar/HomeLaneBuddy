@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -51,13 +52,30 @@ public class UserReviewDialogPresenter extends HLCoreFragmentDialogPresenter<Use
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 mView.setStarColor(rating);
                 ratingBar.setRating(rating);
-                if (rating!= 0.0)
+                if (rating != 0.0)
                     mView.mPostButton.setEnabled(true);
                 else
                     mView.mPostButton.setEnabled(false);
             }
         });
         mContext = getActivity();
+
+        String[] status = getResources().getStringArray(R.array.status);
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_dropdown_item, status);
+        mView.mTaskStatus.setAdapter(arrayAdapter);
+
+        int selection = 0;
+
+        for(int i=0;i<status.length;i++){
+            if(status[i].equals(getArguments().getString(Constants.Task.TASK_STATUS))){
+                selection = i;
+            }
+        }
+
+        mView.mTaskStatus.setSelection(selection);
+
 
         mView.mSendFeedback.setOnClickListener(new View.OnClickListener() {
             @Override

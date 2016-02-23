@@ -11,6 +11,7 @@ import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hl.hlcorelib.mvp.HLView;
@@ -29,6 +30,7 @@ public class UserReviewView implements HLView {
 
     private View mView;
     RatingBar mRatingBar;
+    Spinner mTaskStatus;
     TextView mRateText;
     CheckedTextView mSendFeedback;
     EditText mComments;
@@ -44,6 +46,7 @@ public class UserReviewView implements HLView {
         mPostButton = (TextView)mView.findViewById(R.id.post_button);
         mCancelButton = (TextView)mView.findViewById(R.id.cancel_button);
         mSendFeedback = (CheckedTextView) mView.findViewById(R.id.enable_comments);
+        mTaskStatus = (Spinner) mView.findViewById(R.id.status_spinner);
     }
 
 

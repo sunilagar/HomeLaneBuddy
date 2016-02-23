@@ -1,5 +1,6 @@
 package com.hl.homelanebuddy.main.task;
 
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -177,6 +178,13 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                                     taskObj.put(Constants.Task.TASK_DATE, date.getTime() + "");
                                     taskObj.put(Constants.Task.TASK_ASSIGNED_TO, task.getString(Constants.Task.TASK_ASSIGNED_TO));
                                     taskObj.put(Constants.Task.TASK_TYPE, task.getString(Constants.Task.TASK_TYPE));
+
+                                    if(task.has(Constants.Task.TASK_STATUS))
+                                        taskObj.put(Constants.Task.TASK_STATUS, task.getString(Constants.Task.TASK_STATUS));
+                                    else
+                                        taskObj.put(Constants.Task.TASK_STATUS, Constants.TaskStatus.TASK_STATUS_NOT_UPDATED);
+
+
                                     taskObj.save();
                                     taskArray.add(taskObj);
 
@@ -278,6 +286,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             FragmentManager fm = getChildFragmentManager();
             UserReviewDialogPresenter mConfirmationDialogPresenter = new UserReviewDialogPresenter();
             mConfirmationDialogPresenter.setArguments(bundle);
+            mConfirmationDialogPresenter.setStyle(UserReviewDialogPresenter.STYLE_NORMAL, R.style.CustomDialog);
+
             mConfirmationDialogPresenter.show(fm, "dialog0");
 
 //            HLFragmentUtils.HLFragmentTransaction transaction =

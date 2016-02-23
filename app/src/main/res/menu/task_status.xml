@@ -7,14 +7,17 @@
         android:title="Done on time"/>
 
     <item
-        android:id="@+id/action_done_delayed"
+        android:id="@+id/action_done_slight_delayed"
+        android:title="Done but delayed" />
+    <item
+        android:id="@+id/action_done_heavy_delayed"
         android:title="Done but delayed" />
 
     <item
-        android:id="@+id/action_due"
+        android:id="@+id/action_on_progress"
         android:title="Due on schedule"/>
 
     <item
-        android:id="@+id/action_behind_schedule"
+        android:id="@+id/action_scheduled_notstarted"
         android:title="Due behind schedule" />
 </menu>

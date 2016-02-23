@@ -17,6 +17,17 @@ public final class Constants {
         public static final String TASK_TYPE = "taskType";
         public static final String TASK_ASSIGNED_TO = "assignedTo";
         public static final String TASK_DATE = "taskDate";
+        public static final String TASK_STATUS = "taskStatus";
+
+    }
+
+    public static final class TaskStatus{
+        public static final String TASK_STATUS_DONE = "taskStatusDone";
+        public static final String TASK_STATUS_SLIGHT_DELAYED = "taskStatusSlightDelayed";
+        public static final String TASK_STATUS_OVER_DELAYED = "taskStatusDelayed";
+        public static final String TASK_STATUS_ONPROGRESS = "taskStatusOnProgress";
+        public static final String TASK_STATUS_SCHEDULED_NOT_STARTED = "taskStatusNotStarted";
+        public static final String TASK_STATUS_NOT_UPDATED = "taskStatusNotUpdated";
     }
 
     public static final String USER_REVIEW_EVENT = "USER_REVIEW_EVENT";

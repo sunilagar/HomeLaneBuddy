@@ -38,6 +38,7 @@ import com.crashlytics.android.Crashlytics;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.hlcorelib.orm.HLObject;
+import com.hl.hlcorelib.orm.HLQuery;
 import com.hl.homelanebuddy.Constants;
 import com.hl.homelanebuddy.R;
 
@@ -177,6 +178,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskDay.setText(convertTime(Long.parseLong(task.getString(Constants.Task.TASK_DATE)), "MMM"));
             if (System.currentTimeMillis() >= Long.parseLong(task.getString(Constants.Task.TASK_DATE))) {
                 holder.mTaskReview.setEnabled(true);
+
+            } else {
+                holder.mTaskReview.setEnabled(false);
+            }
+
+            if(task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_DONE) ||
+                    task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_SLIGHT_DELAYED) ||
+                    task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_OVER_DELAYED) ) {
+
                 holder.mCardView.setCardBackgroundColor(holder.mTaskReview.getContext().getResources().
                         getColor(R.color.card_view_green));
                 holder.mTaskReview.setOnClickListener(new View.OnClickListener() {
@@ -186,6 +196,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                         Bundle bundle = new Bundle();
                         bundle.putString(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
                         bundle.putParcelableArrayList(Constants.Task.NAME, mDataSet);
+                        bundle.putString(Constants.Task.TASK_STATUS, task.getString(Constants.Task.TASK_STATUS));
 
                         HLCoreEvent event = new HLCoreEvent(Constants.USER_REVIEW_EVENT,
                                 bundle);
@@ -194,12 +205,38 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                     }
                 });
 
-            } else {
-                holder.mTaskReview.setEnabled(false);
+                holder.mTaskStatus.setBackgroundResource(R.drawable.ic_done_white_24dp);
+
+                if(task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_SLIGHT_DELAYED)){
+                    holder.mStatusColor.setVisibility(View.VISIBLE);
+                    holder.mStatusColor.setBackgroundColor(holder.mTaskReview.getContext().getResources().
+                            getColor(R.color.card_view_yellow));
+                }else if(task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_OVER_DELAYED)) {
+                    holder.mStatusColor.setVisibility(View.VISIBLE);
+                    holder.mStatusColor.setBackgroundColor(holder.mTaskReview.getContext().getResources().
+                            getColor(R.color.red));
+                }else
+                    holder.mStatusColor.setVisibility(View.GONE);
+
+            }else if(task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_ONPROGRESS) ||
+                    task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_SCHEDULED_NOT_STARTED)) {
                 holder.mCardView.setCardBackgroundColor(holder.mTaskReview.getContext().getResources().
                         getColor(R.color.card_view_gray));
-            }
+                holder.mTaskStatus.setBackgroundResource(R.drawable.ic_timer_white_24dp);
 
+                if(task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_SCHEDULED_NOT_STARTED)){
+                    holder.mStatusColor.setVisibility(View.VISIBLE);
+                    holder.mStatusColor.setBackgroundColor(holder.mTaskReview.getContext().getResources().
+                            getColor(R.color.red));
+                    holder.mTaskStatus.setBackgroundResource(R.drawable.ic_timelapse_white_24dp);
+                }else
+                    holder.mStatusColor.setVisibility(View.GONE);
+
+            }else{
+                holder.mCardView.setCardBackgroundColor(holder.mTaskReview.getContext().getResources().
+                        getColor(R.color.card_view_yellow));
+
+            }
 
             holder.mTaskStatus.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -229,6 +266,53 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getItemId() == R.id.action_done) {
+                                try {
+                                    task.put(Constants.Task.TASK_STATUS, Constants.TaskStatus.TASK_STATUS_DONE);
+                                    task.save();
+                                    notifyDataSetChanged();
+                                } catch (HLQuery.HLQueryException e) {
+                                    e.printStackTrace();
+                                }
+                                return true;
+                            } else if (item.getItemId() == R.id.action_done_slight_delayed) {
+                                try {
+                                    task.put(Constants.Task.TASK_STATUS, Constants.TaskStatus.TASK_STATUS_SLIGHT_DELAYED);
+                                    task.save();
+                                    notifyDataSetChanged();
+                                } catch (HLQuery.HLQueryException e) {
+                                    e.printStackTrace();
+                                }
+                                return true;
+                            }else if (item.getItemId() == R.id.action_done_heavy_delayed) {
+                                try {
+                                    task.put(Constants.Task.TASK_STATUS, Constants.TaskStatus.TASK_STATUS_OVER_DELAYED);
+                                    task.save();
+                                    notifyDataSetChanged();
+                                }catch (HLQuery.HLQueryException e){
+                                    e.printStackTrace();
+                                }
+                                return true;
+                            }else if (item.getItemId() == R.id.action_on_progress) {
+                                try {
+                                    task.put(Constants.Task.TASK_STATUS, Constants.TaskStatus.TASK_STATUS_ONPROGRESS);
+                                    task.save();
+                                    notifyDataSetChanged();
+                                }catch (HLQuery.HLQueryException e){
+                                    e.printStackTrace();
+                                }
+                                return true;
+                            }else if (item.getItemId() == R.id.action_scheduled_notstarted) {
+                                try {
+                                    task.put(Constants.Task.TASK_STATUS, Constants.TaskStatus.TASK_STATUS_SCHEDULED_NOT_STARTED);
+                                    task.save();
+                                    notifyDataSetChanged();
+                                }catch (HLQuery.HLQueryException e){
+                                    e.printStackTrace();
+                                }
+                                return true;
+                            }
+
                             return false;
                         }
                     });
