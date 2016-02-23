@@ -74,22 +74,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             }
         });
 
-        setHLTeamSpinner();
     }
 
-    private void setHLTeamSpinner() {
-        ArrayList<String> mTeams = new ArrayList<>();
-        mTeams.add("HL Design Team");
-        mTeams.add("HL CSR Team");
-        mTeams.add("HL Helpline - Toll free");
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
-                R.layout.simple_spinner_item, mTeams);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        mView.mMyHLTeamSpinner.setAdapter(arrayAdapter);
-
-    }
 
     /**
      * Function to show the snack bar
@@ -151,14 +137,14 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         mView.showProgress();
         final long currentTime = System.currentTimeMillis();
         volleyReqQueue = Volley.newRequestQueue(getActivity());
-        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details)+ HLPreferenceUtils.obtain().getString("USER");
+        String url = HLCoreLib.readProperty(Constants.APPConfig.get_task_details) + HLPreferenceUtils.obtain().getString("USER");
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(final String jsonString) {
 
-                        try{
+                        try {
 
 
                             taskArray.clear();

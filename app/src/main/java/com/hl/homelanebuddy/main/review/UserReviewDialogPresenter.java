@@ -66,15 +66,25 @@ public class UserReviewDialogPresenter extends HLCoreFragmentDialogPresenter<Use
                 android.R.layout.simple_spinner_dropdown_item, status);
         mView.mTaskStatus.setAdapter(arrayAdapter);
 
-        int selection = 0;
 
-        for(int i=0;i<status.length;i++){
-            if(status[i].equals(getArguments().getString(Constants.Task.TASK_STATUS))){
-                selection = i;
-            }
-        }
+        if(Constants.TaskStatus.TASK_STATUS_DONE.equals(
+                getArguments().getString(Constants.Task.TASK_STATUS)))
+            mView.mTaskStatus.setSelection(0);
+        else if(Constants.TaskStatus.TASK_STATUS_SLIGHT_DELAYED.equals(
+                getArguments().getString(Constants.Task.TASK_STATUS)))
+            mView.mTaskStatus.setSelection(1);
+        else if(Constants.TaskStatus.TASK_STATUS_OVER_DELAYED.equals(
+                getArguments().getString(Constants.Task.TASK_STATUS)))
+            mView.mTaskStatus.setSelection(2);
+        else if(Constants.TaskStatus.TASK_STATUS_ONPROGRESS.equals(
+                getArguments().getString(Constants.Task.TASK_STATUS)))
+            mView.mTaskStatus.setSelection(3);
+        else if(Constants.TaskStatus.TASK_STATUS_SCHEDULED_NOT_STARTED.equals(
+                getArguments().getString(Constants.Task.TASK_STATUS)))
+            mView.mTaskStatus.setSelection(4);
 
-        mView.mTaskStatus.setSelection(selection);
+
+
 
 
         mView.mSendFeedback.setOnClickListener(new View.OnClickListener() {
@@ -257,6 +267,7 @@ public class UserReviewDialogPresenter extends HLCoreFragmentDialogPresenter<Use
             object.put("rating", data.get(UserReviewView.USER_REVIEW));
             Toast.makeText(getActivity(), data.getString(UserReviewView.USER_REVIEW) , Toast.LENGTH_LONG).show();
             object.put("type", data.get(UserReviewView.USER_COMMENT));
+            object.put("status", getArguments().get(Constants.Task.TASK_STATUS));
 
             tasks.put(object);
 
@@ -268,6 +279,7 @@ public class UserReviewDialogPresenter extends HLCoreFragmentDialogPresenter<Use
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("name",task.getString(Constants.Task.TASK_NAME));
                 jsonObject.put("type",task.getString(Constants.Task.TASK_TYPE));
+                jsonObject.put("status",task.getString(Constants.Task.TASK_STATUS));
                 tasks.put(jsonObject);
             }
 

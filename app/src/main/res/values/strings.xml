@@ -31,11 +31,11 @@
     <string name="call_homelane">Your HomeLane Team</string>
 
     <string-array name="status">
-        <item>Completed on time</item>
-        <item>Completed @ slight delay</item>
-        <item>Completed @ delay</item>
-        <item>In progress</item>
-        <item>Not started</item>
+        <item>Done on time</item>
+        <item>Done @ slight delay</item>
+        <item>Done @ delay</item>
+        <item>Due on schedule</item>
+        <item>Due behind schedule</item>
     </string-array>
 
 </resources>

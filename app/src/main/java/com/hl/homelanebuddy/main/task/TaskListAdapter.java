@@ -178,17 +178,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskDay.setText(convertTime(Long.parseLong(task.getString(Constants.Task.TASK_DATE)), "MMM"));
             if (System.currentTimeMillis() >= Long.parseLong(task.getString(Constants.Task.TASK_DATE))) {
                 holder.mTaskReview.setEnabled(true);
+                holder.mTaskReview.setTextColor(holder.mTaskDay.getResources().getColor(R.color.white));
+                holder.mTaskReview.setCompoundDrawablesWithIntrinsicBounds(holder.mTaskReview.getResources().
+                        getDrawable(R.drawable.ic_chat_white_18dp), null, null, null);
 
-            } else {
-                holder.mTaskReview.setEnabled(false);
-            }
-
-            if(task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_DONE) ||
-                    task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_SLIGHT_DELAYED) ||
-                    task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_OVER_DELAYED) ) {
-
-                holder.mCardView.setCardBackgroundColor(holder.mTaskReview.getContext().getResources().
-                        getColor(R.color.card_view_green));
                 holder.mTaskReview.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -204,6 +197,20 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
                     }
                 });
+
+            } else {
+                holder.mTaskReview.setEnabled(false);
+                holder.mTaskReview.setTextColor(holder.mTaskDay.getResources().getColor(R.color.light_gray));
+                holder.mTaskReview.setCompoundDrawablesWithIntrinsicBounds(holder.mTaskReview.getResources().
+                        getDrawable(R.drawable.ic_chat_grey_400_18dp),null,null,null);
+            }
+
+            if(task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_DONE) ||
+                    task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_SLIGHT_DELAYED) ||
+                    task.getString(Constants.Task.TASK_STATUS).equals(Constants.TaskStatus.TASK_STATUS_OVER_DELAYED) ) {
+
+                holder.mCardView.setCardBackgroundColor(holder.mTaskReview.getContext().getResources().
+                        getColor(R.color.card_view_green));
 
                 holder.mTaskStatus.setBackgroundResource(R.drawable.ic_done_white_24dp);
 
@@ -235,6 +242,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             }else{
                 holder.mCardView.setCardBackgroundColor(holder.mTaskReview.getContext().getResources().
                         getColor(R.color.card_view_yellow));
+                holder.mTaskReview.setCompoundDrawablesWithIntrinsicBounds(holder.mTaskReview.getResources().
+                        getDrawable(R.drawable.ic_chat_grey_400_18dp), null, null, null);
+                holder.mTaskReview.setTextColor(holder.mTaskDay.getResources().getColor(R.color.light_gray));
 
             }
 
@@ -243,6 +253,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 public void onClick(View v) {
                     PopupMenu popupMenu = new PopupMenu(holder.mTaskStatus.getContext(), v);
 
+/*
                     try {
                         Field[] fields = popupMenu.getClass().getDeclaredFields();
                         for (Field field : fields) {
@@ -261,6 +272,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                         e.printStackTrace();
                         Crashlytics.getInstance().core.logException(e.getCause());
                     }
+*/
 
                     popupMenu.getMenuInflater().inflate(R.menu.task_status, popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

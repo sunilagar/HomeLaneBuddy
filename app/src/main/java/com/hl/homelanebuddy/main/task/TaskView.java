@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +16,10 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.hl.hlcorelib.HLProgressInterface;
 import com.hl.hlcorelib.mvp.HLView;
 import com.hl.homelanebuddy.R;
@@ -33,10 +36,15 @@ public class TaskView implements HLView, HLProgressInterface {
     HLProgressView mProgressView;
     RelativeLayout mRelativeLayout;
     TextView mErrorText;
-    Spinner mMyHLTeamSpinner;
-    FloatingActionButton mCallButton, mEmailButton;
 
     SwipeRefreshLayout mSwipeRefreshLayout;
+
+    FloatingActionsMenu menuMultipleActions;
+
+    View actionA, actionB;
+
+    FloatingActionButton actionC, actionD, actionE;
+
 
     /**
      * Return the enclosing view
@@ -93,10 +101,16 @@ public class TaskView implements HLView, HLProgressInterface {
         mTaskList = (RecyclerView) mView.findViewById(R.id.task_list);
         mProgressView = (HLProgressView) mView.findViewById(R.id.progress_view);
 
-        mScrollView = (ScrollView)mView.findViewById(R.id.scroll_view);
+        mScrollView = (ScrollView) mView.findViewById(R.id.scroll_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.swipe);
 
         mErrorText = (TextView) mView.findViewById(R.id.error_display);
+        menuMultipleActions = (FloatingActionsMenu) mView.findViewById(R.id.multiple_actions);
+        actionA = (View) mView.findViewById(R.id.action_a);
+        actionB = (View) mView.findViewById(R.id.action_b);
+        actionC = new FloatingActionButton(mView.getContext());
+        actionD = new FloatingActionButton(mView.getContext());
+        actionE = new FloatingActionButton(mView.getContext());
 
         mTaskList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mTaskList.getContext());
@@ -112,11 +126,187 @@ public class TaskView implements HLView, HLProgressInterface {
 //            }
 //        });
 
-        mMyHLTeamSpinner = (Spinner) mView.findViewById(R.id.hl_team_spinner);
-        mCallButton = (FloatingActionButton) mView.findViewById(R.id.call_myteam_button);
-        mEmailButton = (FloatingActionButton) mView.findViewById(R.id.email_button);
+        actionC.setTitle("HL Helpline-Toll free");
+        actionC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mCallEvent && !mEmailEvent) {
+                    Toast.makeText(mView.getContext(), "Call event", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mView.getContext(), "Email event", Toast.LENGTH_SHORT).show();
+
+                }
+
+
+            }
+        });
+
+
+        actionB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionB.setVisibility(View.GONE);
+                actionA.setVisibility(View.VISIBLE);
+                mCallEvent = true;
+                mEmailEvent = false;
+
+
+                if (!mCallFlag) {
+
+                    mCallFlag = true;
+                    actionC.setVisibility(View.VISIBLE);
+                    actionD.setVisibility(View.VISIBLE);
+                    actionE.setVisibility(View.VISIBLE);
+
+                    actionC.setColorNormal(mView.getContext().getResources().getColor(R.color.blue));
+                    actionD.setColorNormal(mView.getContext().getResources().getColor(R.color.blue));
+                    actionE.setColorNormal(mView.getContext().getResources().getColor(R.color.blue));
+
+
+                    actionC.setImageResource(R.drawable.ic_call_white_24dp);
+
+                    actionD.setImageResource(R.drawable.ic_call_white_24dp);
+
+                    actionE.setImageResource(R.drawable.ic_call_white_24dp);
+
+
+                    menuMultipleActions.addButton(actionC);
+                    menuMultipleActions.addButton(actionD);
+                    menuMultipleActions.addButton(actionE);
+
+                } else {
+                    actionC.setVisibility(View.VISIBLE);
+                    actionD.setVisibility(View.VISIBLE);
+                    actionE.setVisibility(View.VISIBLE);
+
+
+                    actionC.setColorNormal(mView.getContext().getResources().getColor(R.color.blue));
+                    actionD.setColorNormal(mView.getContext().getResources().getColor(R.color.blue));
+                    actionE.setColorNormal(mView.getContext().getResources().getColor(R.color.blue));
+
+
+                    actionC.setImageResource(R.drawable.ic_call_white_24dp);
+
+                    actionD.setImageResource(R.drawable.ic_call_white_24dp);
+
+                    actionE.setImageResource(R.drawable.ic_call_white_24dp);
+
+
+                }
+
+
+
+
+
+
+          /*      actionA.setVisibility(actionA.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+                menuMultipleActions.addButton(actionC);
+                menuMultipleActions.addButton(actionD);
+                menuMultipleActions.addButton(actionE);
+
+                actionA.setVisibility(actionC.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+                actionC.setVisibility(View.GONE);
+                actionD.setVisibility(View.GONE);
+                actionE.setVisibility(View.GONE);
+*/
+
+            }
+        });
+
+
+        actionD.setTitle("HL CSR Team");
+        actionD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        actionE.setTitle("HL Design Team");
+        actionE.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+            }
+        });
+
+
+        menuMultipleActions.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+            @Override
+            public void onMenuExpanded() {
+                Log.d("TAG", "onMenuExpanded");
+                actionB.setVisibility(View.VISIBLE);
+                actionA.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onMenuCollapsed() {
+                Log.d("TAG", "onMenuCollapsed");
+
+
+                actionC.setVisibility(View.GONE);
+                actionD.setVisibility(View.GONE);
+                actionE.setVisibility(View.GONE);
+            }
+        });
+
+        actionA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionA.setVisibility(View.GONE);
+                actionB.setVisibility(View.VISIBLE);
+
+                mCallEvent = false;
+                mEmailEvent = true;
+
+                if (!mCallFlag) {
+                    mCallFlag = true;
+
+                    actionC.setVisibility(View.VISIBLE);
+                    actionD.setVisibility(View.VISIBLE);
+                    actionE.setVisibility(View.VISIBLE);
+
+                    actionC.setColorNormal(mView.getContext().getResources().getColor(R.color.orange));
+                    actionD.setColorNormal(mView.getContext().getResources().getColor(R.color.orange));
+                    actionE.setColorNormal(mView.getContext().getResources().getColor(R.color.orange));
+
+
+                    actionC.setImageResource(R.drawable.ic_email_white_24dp);
+                    actionD.setImageResource(R.drawable.ic_email_white_24dp);
+                    actionE.setImageResource(R.drawable.ic_email_white_24dp);
+
+
+                    menuMultipleActions.addButton(actionC);
+                    menuMultipleActions.addButton(actionD);
+                    menuMultipleActions.addButton(actionE);
+                } else {
+                    actionC.setVisibility(View.VISIBLE);
+                    actionD.setVisibility(View.VISIBLE);
+                    actionE.setVisibility(View.VISIBLE);
+
+                    actionC.setColorNormal(mView.getContext().getResources().getColor(R.color.orange));
+                    actionD.setColorNormal(mView.getContext().getResources().getColor(R.color.orange));
+                    actionE.setColorNormal(mView.getContext().getResources().getColor(R.color.orange));
+
+
+                    actionC.setImageResource(R.drawable.ic_email_white_24dp);
+
+                    actionD.setImageResource(R.drawable.ic_email_white_24dp);
+
+                    actionE.setImageResource(R.drawable.ic_email_white_24dp);
+
+                }
+
+
+            }
+        });
+
 
     }
+
+    boolean mCallFlag = false, mCallEvent = false, mEmailEvent = false;
+
 
     @Override
     public void showProgress() {
@@ -139,4 +329,5 @@ public class TaskView implements HLView, HLProgressInterface {
         mProgressView.hideProgress();
         mTaskList.setVisibility(View.VISIBLE);
     }
+
 }

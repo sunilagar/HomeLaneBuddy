@@ -8,10 +8,10 @@
 
     <item
         android:id="@+id/action_done_slight_delayed"
-        android:title="Done but delayed" />
+        android:title="Done @ slight delay" />
     <item
         android:id="@+id/action_done_heavy_delayed"
-        android:title="Done but delayed" />
+        android:title="Done @ delay" />
 
     <item
         android:id="@+id/action_on_progress"
