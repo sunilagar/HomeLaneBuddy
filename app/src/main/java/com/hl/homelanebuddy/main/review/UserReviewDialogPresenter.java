@@ -122,11 +122,14 @@ public class UserReviewDialogPresenter extends HLCoreFragmentDialogPresenter<Use
                 /**
                  * Reviewers Email ID
                  */
+                int Rating =   ((Float)mView.mRatingBar.getRating()).intValue();
+                String Type =  mView.mTaskStatus.getSelectedItem().toString();
+
                 Answers.getInstance().logRating(new RatingEvent()
-                        .putRating(new Integer(mView.getUserReview()))
-                        .putContentName(((TextView)mView.getView().findViewById(R.id.event_name)).getText().toString())
-                        .putContentType("Review Rating")
-                        .putContentId("Review"));
+                        .putRating(Rating)
+                        .putContentName("Review Rating")
+                        .putContentType(Type)
+                        .putContentId(HLPreferenceUtils.obtain().getString("USER")));
             }
         });
 
