@@ -17,7 +17,7 @@ public class HomeLaneBuddy extends HLApplication {
         super.onCreate();
 
         Fabric.with(this, new Crashlytics());
-        HLCoreLib.init(getApplicationContext(), false);
+        HLCoreLib.init(getApplicationContext(), true);
         HLCoreLib.initAppConfig(HLConstants.Environments.DEV_ENVIRONMENT);
     }
 }

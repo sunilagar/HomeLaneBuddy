@@ -96,8 +96,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView> implements
         /**
          * View page
          */
-        Answers.getInstance().logCustom(new CustomEvent(Constants.NOTIFICATION).putCustomAttribute(Constants.EMAILID,
-                LoginPresenter.mGoogleAccount.getEmail()));
+        
+        Answers.getInstance().logCustom(new CustomEvent(Constants.NOTIFICATION).putCustomAttribute(Constants.EMAILID,HLPreferenceUtils.obtain().getString("USER")));
     }
 
     @Override

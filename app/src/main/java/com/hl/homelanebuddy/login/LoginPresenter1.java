@@ -73,6 +73,14 @@ public class LoginPresenter1 extends HLCoreActivityPresenter<LoginView1> {
                 if (mView.mAutoCompleteText.getText().toString().length() > 0) {
                     HLPreferenceUtils.obtain().put("USER", mView.mAutoCompleteText.getText().toString());
 
+                    /**
+                     * Login
+                     */
+                    Answers.getInstance().logLogin(new LoginEvent()
+                            .putMethod("Digits")
+                            .putSuccess(true)
+                            .putCustomAttribute("Customer", mView.mAutoCompleteText.getText().toString()));
+
                     Intent intent = new Intent(LoginPresenter1.this, MainPresenter.class);
                     startActivity(intent);
                     finish();
