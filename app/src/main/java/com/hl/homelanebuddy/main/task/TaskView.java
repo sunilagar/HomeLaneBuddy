@@ -18,6 +18,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.hl.hlcorelib.HLProgressInterface;
@@ -219,6 +221,19 @@ public class TaskView implements HLView, HLProgressInterface {
         actionD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /**
+                 * For call made to CSR Team
+                 */
+                Answers.getInstance().logCustom(new CustomEvent("Customer Care Help ")
+                        .putCustomAttribute("Call", "Made a call")
+                        .putCustomAttribute("To","HL CSR Team"));
+
+                /**
+                 * For Email to CSR Team
+                 */
+                Answers.getInstance().logCustom(new CustomEvent("Customer Care Help ")
+                        .putCustomAttribute("Email", "Mail to HL")
+                        .putCustomAttribute("To","HL CSR Team"));
 //                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
             }
         });
@@ -227,6 +242,20 @@ public class TaskView implements HLView, HLProgressInterface {
         actionE.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /**
+                 * For call made to Design Team
+                 */
+                Answers.getInstance().logCustom(new CustomEvent("Customer Care Help ")
+                        .putCustomAttribute("Call", "Made a call")
+                        .putCustomAttribute("To","HL Design Team"));
+
+                /**
+                 * For Email to Design Team
+                 */
+                Answers.getInstance().logCustom(new CustomEvent("Customer Care Help ")
+                        .putCustomAttribute("Email", "Mail to HL")
+                        .putCustomAttribute("To","HL Design Team"));
+
 //                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
             }
         });
