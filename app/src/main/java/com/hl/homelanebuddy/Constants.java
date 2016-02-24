@@ -17,7 +17,7 @@ public final class Constants {
         public static final String TASK_TYPE = "taskType";
         public static final String TASK_ASSIGNED_TO = "assignedTo";
         public static final String TASK_DATE = "taskDate";
-        public static final String TASK_STATUS = "taskStatus";
+        public static final String TASK_STATUS = "status";
 
     }
 

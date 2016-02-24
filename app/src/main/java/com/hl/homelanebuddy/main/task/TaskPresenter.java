@@ -1,12 +1,10 @@
 package com.hl.homelanebuddy.main.task;
 
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
-import android.widget.ArrayAdapter;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -70,7 +68,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
             public void run() {
              /*   mView.mTaskList.setVisibility(View.VISIBLE);
                 mView.mErrorText.setVisibility(View.GONE);*/
-                mView.mSwipeRefreshLayout.setRefreshing(true);
+                if (mView!=null)
+                    mView.mSwipeRefreshLayout.setRefreshing(true);
             }
         });
 
@@ -146,14 +145,15 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
 
                         try {
 
-
                             taskArray.clear();
                             JSONObject tasks = new JSONObject(jsonString);
 
                             JSONArray taskList = tasks.getJSONArray("Details");
+                            JSONArray taskRatings = tasks.getJSONArray("Ratings");
 
                             for (int i = 0; i < taskList.length(); i++) {
                                 JSONObject task = taskList.getJSONObject(i);
+                                JSONObject taskRating = taskRatings.getJSONObject(i+1);
                                 HLObject taskObj = new HLObject(Constants.Task.NAME);
                                 taskObj.put(Constants.Task.TASK_NAME, task.getString(Constants.Task.TASK_NAME));
 
@@ -165,8 +165,8 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
                                     taskObj.put(Constants.Task.TASK_ASSIGNED_TO, task.getString(Constants.Task.TASK_ASSIGNED_TO));
                                     taskObj.put(Constants.Task.TASK_TYPE, task.getString(Constants.Task.TASK_TYPE));
 
-                                    if(task.has(Constants.Task.TASK_STATUS))
-                                        taskObj.put(Constants.Task.TASK_STATUS, task.getString(Constants.Task.TASK_STATUS));
+                                    if(taskRating.has(Constants.Task.TASK_STATUS))
+                                        taskObj.put(Constants.Task.TASK_STATUS, taskRating.getString(Constants.Task.TASK_STATUS));
                                     else
                                         taskObj.put(Constants.Task.TASK_STATUS, Constants.TaskStatus.TASK_STATUS_NOT_UPDATED);
 
@@ -270,11 +270,10 @@ public class TaskPresenter extends HLCoreFragment<TaskView> implements HLEventLi
         if (e.getType().equals(Constants.USER_REVIEW_EVENT)) {
 
             FragmentManager fm = getChildFragmentManager();
-            UserReviewDialogPresenter mConfirmationDialogPresenter = new UserReviewDialogPresenter();
-            mConfirmationDialogPresenter.setArguments(bundle);
-            mConfirmationDialogPresenter.setStyle(UserReviewDialogPresenter.STYLE_NORMAL, R.style.CustomDialog);
-
-            mConfirmationDialogPresenter.show(fm, "dialog0");
+            UserReviewDialogPresenter mUserReviewDialogPresenter = new UserReviewDialogPresenter();
+            mUserReviewDialogPresenter.setArguments(bundle);
+            mUserReviewDialogPresenter.setStyle(UserReviewDialogPresenter.STYLE_NORMAL, R.style.CustomDialog);
+            mUserReviewDialogPresenter.show(fm, "dialog0");
 
 //            HLFragmentUtils.HLFragmentTransaction transaction =
 //                    new HLFragmentUtils.HLFragmentTransaction();
